@@ -21,8 +21,8 @@ void setup(
 
     std::cout << "Enter y values separated by commas: " << std::endl;
 
-    vectorize(n, y);
-    tensorize(n, p, x_bar, x);
+    vectorize(y);
+    tensorize(p, x_bar, x);
 
     y_bar = mean_vector(y);
 
@@ -32,27 +32,27 @@ void setup(
     std::cout << std::endl;
 }
 
-void vectorize(int n, Eigen::Ref<Eigen::VectorXd> v) {
+void vectorize(Eigen::Ref<Eigen::VectorXd> v) {
     double d;
     char c;
 
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i < v.size(); i++) {
         std::cin >> d;
         v(i) = d;
-        if (i == n - 1) {
+        if (i == v.size() - 1) {
             break;
         }
         std::cin >> c;
     }
 }
 
-void tensorize(int n, int p, Eigen::VectorXd &x_bar, Eigen::MatrixXd &x) {
+void tensorize(int p, Eigen::VectorXd &x_bar, Eigen::MatrixXd &x) {
     x.col(0).setOnes();
 
     for (int i = 1; i < p; i++) {
         std::cout << "Enter x_" << i;
         std::cout << " values separated by commas: " << std::endl;
-        vectorize(n, x.col(i));
+        vectorize(x.col(i));
     }
 
     x_bar = x.colwise().mean();

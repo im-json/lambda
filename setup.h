@@ -7,9 +7,9 @@ void setup(
     Eigen::VectorXd &y, Eigen::MatrixXd &x
 );
 
-void vectorize(int n, Eigen::Ref<Eigen::VectorXd> v);
+void vectorize(Eigen::Ref<Eigen::VectorXd> v);
 
-void tensorize(int n, int p, Eigen::VectorXd &x_bar, Eigen::MatrixXd &x);
+void tensorize(int p, Eigen::VectorXd &x_bar, Eigen::MatrixXd &x);
 
 void print_vector(Eigen::Ref<Eigen::VectorXd> v);
 

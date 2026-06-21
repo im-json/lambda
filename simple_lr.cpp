@@ -12,12 +12,12 @@ void simple_summary(
     double rss, rse, tss;
     double r2, adjr2;
 
-    slope = get_slope(n, x_bar[1], y_bar, x.col(1), y);
+    slope = get_slope(x_bar[1], y_bar, x.col(1), y);
     intercept = get_intercept(slope, x_bar[1], y_bar);
 
-    rss = get_RSS(n, intercept, slope, x.col(1), y);
+    rss = get_RSS(intercept, slope, x.col(1), y);
     rse = get_RSE(n, k, rss);
-    tss = get_TSS(n, y, y_bar);
+    tss = get_TSS(y_bar, y);
 
     r2 = get_R2(rss, tss);
     adjr2 = get_adjR2(n, k, r2);
@@ -33,12 +33,12 @@ void simple_summary(
 }
 
 double get_slope(
-    int n, double x_bar, double y_bar,
+    double x_bar, double y_bar,
     Eigen::Ref<Eigen::VectorXd> x, Eigen::Ref<Eigen::VectorXd> y
 ) {
     double num = 0.0, den = 0.0;
 
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i < y.size(); i++) {
         num += (x[i] - x_bar) * (y[i] - y_bar);
         den += std::pow((x[i] - x_bar), 2);
     }
@@ -51,13 +51,13 @@ double get_intercept(double slope, double x_bar, double y_bar) {
 }
 
 double get_RSS(
-    int n, double intercept, double slope,
+    double intercept, double slope,
     Eigen::Ref<Eigen::VectorXd> x, Eigen::Ref<Eigen::VectorXd> y
 ) {
     double y_hat;
     double rss = 0.0;
 
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i < y.size(); i++) {
         y_hat = intercept + (slope * x[i]);
         rss += std::pow(std::abs(y[i] - y_hat), 2);
     }
@@ -69,10 +69,10 @@ double get_RSE(int n, int p, double rss) {
     return std::pow(rss / (n - p - 1), 0.5);
 }
 
-double get_TSS(int n, Eigen::Ref<Eigen::VectorXd> y, double y_bar) {
+double get_TSS(double y_bar, Eigen::Ref<Eigen::VectorXd> y) {
     double tss = 0.0;
 
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i < y.size(); i++) {
         tss += std::pow(std::abs(y[i] - y_bar), 2);
     }
 
