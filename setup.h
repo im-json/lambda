@@ -10,7 +10,3 @@ void model(
 void vectorize(Eigen::Ref<Eigen::VectorXd> v);
 
 void tensorize(Eigen::VectorXd &bar_x, Eigen::MatrixXd &x);
-
-void print_vector(Eigen::Ref<Eigen::VectorXd> v);
-
-void print_matrix(Eigen::MatrixXd &m);

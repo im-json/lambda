@@ -24,10 +24,7 @@ void model(
     bar_y = y.mean();
 
     tensorize(bar_x, x);
-    std::cout << "x.transpose:\n";
-    print_matrix(x);
-
-    std::cout << std::endl;
+    std::cout << "x.transpose:\n" << x.transpose() << '\n' << std::endl;
 }
 
 void vectorize(Eigen::Ref<Eigen::VectorXd> v) {
@@ -54,12 +51,4 @@ void tensorize(Eigen::VectorXd &bar_x, Eigen::MatrixXd &x) {
     }
 
     bar_x = x.colwise().mean();
-}
-
-void print_vector(Eigen::Ref<Eigen::VectorXd> v) {
-    std::cout << v.transpose() << std::endl;
-}
-
-void print_matrix(Eigen::MatrixXd &m) {
-    std::cout << m.transpose() << std::endl;
 }
