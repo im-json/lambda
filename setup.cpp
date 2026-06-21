@@ -21,7 +21,7 @@ void model(
 
     std::cout << "Enter y values separated by commas: " << std::endl;
     vectorize(y);
-    bar_y = mean_vector(y);
+    bar_y = y.mean();
 
     tensorize(bar_x, x);
     std::cout << "x.transpose:\n";
@@ -62,8 +62,4 @@ void print_vector(Eigen::Ref<Eigen::VectorXd> v) {
 
 void print_matrix(Eigen::MatrixXd &m) {
     std::cout << m.transpose() << std::endl;
-}
-
-double mean_vector(Eigen::Ref<Eigen::VectorXd> v) {
-    return v.sum() / v.size();
 }
