@@ -1,13 +1,11 @@
 #include <iostream>
-#include <vector>
-#include <numeric>
 #include <cmath>
 
 #include "setup.h"
 #include "simple_lr.h"
 
 void simple_summary(
-    int n, int k, double x_bar, double y_bar,
+    int n, int k, int p, double x_bar, double y_bar,
     Eigen::MatrixXd &x, Eigen::VectorXd &y
 ) {
     double slope, intercept;
@@ -24,15 +22,13 @@ void simple_summary(
     r2 = get_R2(rss, tss);
     adjr2 = get_adjR2(n, k, r2);
 
-    std::cout << "Slope is " << slope << std::endl;
-    std::cout << "Intercept is " << intercept << std::endl;
+    std::cout << "Intercept: " << intercept << std::endl;
+    std::cout << "Slope: " << slope << std::endl;
 
-    std::cout << "RSS is " << rss << std::endl;
-    std::cout << "RSE is " << rse << std::endl;
-    std::cout << "TSS is " << tss << std::endl;
-
-    std::cout << "Multiple R^2 is " << r2 << std::endl;
-    std::cout << "Adjusted R^2 is " << adjr2 << std::endl;
+    std::cout << "Residual standard error: " << rse << " on ";
+    std::cout << n - p << " degrees of freedom" << std::endl;
+    std::cout << "Multiple R-squared: " << r2 << ", ";
+    std::cout << "Adjusted R-squared: " << adjr2 << std::endl;
 }
 
 double get_slope(

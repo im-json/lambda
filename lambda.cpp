@@ -1,3 +1,6 @@
+#include <iostream>
+#include <Eigen/Dense>
+
 #include "lambda.h"
 
 int main() {
@@ -9,9 +12,9 @@ int main() {
     setup(n, k, p, x_bar, y_bar, x, y);
 
     if (k == 1) {
-        simple_summary(n, k, x_bar, y_bar, x, y);
+        simple_summary(n, k, p, x_bar, y_bar, x, y);
     } else if (k > 1) {
-        multiple_summary(n, k, x_bar, y_bar, x, y);
+        multiple_summary(n, k, p, x_bar, y_bar, x, y);
     }
 
     return 0;

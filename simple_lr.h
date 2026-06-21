@@ -1,11 +1,9 @@
 #pragma once
 
-#include <iostream>
-#include <vector>
 #include <Eigen/Dense>
 
 void simple_summary(
-    int n, int k, double x_bar, double y_bar,
+    int n, int k, int p, double x_bar, double y_bar,
     Eigen::MatrixXd &x, Eigen::VectorXd &y
 );
 

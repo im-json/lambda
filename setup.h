@@ -1,7 +1,5 @@
 #pragma once
 
-#include <iostream>
-#include <vector>
 #include <Eigen/Dense>
 
 void setup(
@@ -19,4 +17,4 @@ void print_matrix(Eigen::MatrixXd &m);
 
 double mean_vector(Eigen::Ref<Eigen::VectorXd> v);
 
-double mean_matrix(Eigen::MatrixXd &m);
+double mean_matrix(int n, Eigen::MatrixXd &m);

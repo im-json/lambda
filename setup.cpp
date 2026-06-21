@@ -1,6 +1,4 @@
 #include <iostream>
-#include <vector>
-#include <numeric>
 #include <cmath>
 
 #include "setup.h"
@@ -26,7 +24,7 @@ void setup(
     tensorize(n, p, x);
 
     y_bar = mean_vector(y);
-    x_bar = mean_matrix(x);
+    x_bar = mean_matrix(n, x);
 
     std::cout << "x.transpose:\n";
     print_matrix(x);
@@ -66,11 +64,10 @@ void print_matrix(Eigen::MatrixXd &m) {
     std::cout << m.transpose() << std::endl;
 }
 
-
 double mean_vector(Eigen::Ref<Eigen::VectorXd> v) {
     return v.sum() / v.size();
 }
 
-double mean_matrix(Eigen::MatrixXd &m) {
-    return m.sum() / m.size();
+double mean_matrix(int n, Eigen::MatrixXd &m) {
+    return (m.sum() - n) / (m.size() - n);
 }
