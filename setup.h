@@ -3,13 +3,13 @@
 #include <Eigen/Dense>
 
 void setup(
-    int &n, int &k, int &p, double &y_bar, Eigen::VectorXd &x_bar,
+    int &n, int &k, int &p, double &bar_y, Eigen::VectorXd &bar_x,
     Eigen::VectorXd &y, Eigen::MatrixXd &x
 );
 
 void vectorize(Eigen::Ref<Eigen::VectorXd> v);
 
-void tensorize(int p, Eigen::VectorXd &x_bar, Eigen::MatrixXd &x);
+void tensorize(int p, Eigen::VectorXd &bar_x, Eigen::MatrixXd &x);
 
 void print_vector(Eigen::Ref<Eigen::VectorXd> v);
 

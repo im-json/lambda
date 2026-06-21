@@ -3,16 +3,16 @@
 #include <Eigen/Dense>
 
 void simple_summary(
-    int n, int k, int p, double y_bar, Eigen::VectorXd x_bar,
+    int n, int k, int p, double bar_y, Eigen::VectorXd bar_x,
     Eigen::VectorXd &y, Eigen::MatrixXd &x
 );
 
 double get_slope(
-    double x_bar, double y_bar,
+    double bar_x, double bar_y,
     Eigen::Ref<Eigen::VectorXd> x, Eigen::Ref<Eigen::VectorXd> y
 );
 
-double get_intercept(double slope, double x_bar, double y_bar);
+double get_intercept(double slope, double bar_x, double bar_y);
 
 double get_RSS(
     double intercept, double slope,
@@ -21,7 +21,7 @@ double get_RSS(
 
 double get_RSE(int n, int p, double rss);
 
-double get_TSS(double y_bar, Eigen::Ref<Eigen::VectorXd> y);
+double get_TSS(double bar_y, Eigen::Ref<Eigen::VectorXd> y);
 
 double get_R2(double rss, double tss);
 
