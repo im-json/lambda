@@ -21,8 +21,6 @@ double simple_rss(
 
 double simple_rse(int n, int k, double rss);
 
-double simple_tss(double bar_y, Eigen::Ref<Eigen::VectorXd> y);
-
-double simple_r2(double rss, double tss);
+double simple_r2(double rss, double bar_y, Eigen::Ref<Eigen::VectorXd> y);
 
 double simple_adjr2(int n, int k, double r2);

@@ -9,7 +9,7 @@ void simple_summary(
     Eigen::Ref<Eigen::VectorXd> y, Eigen::Ref<Eigen::VectorXd> x
 ) {
     double slope, intercept;
-    double rss, rse, tss;
+    double rss, rse;
     double r2, adjr2;
 
     slope = simple_slope(bar_y, bar_x, y, x);
@@ -17,9 +17,8 @@ void simple_summary(
 
     rss = simple_rss(intercept, slope, y, x);
     rse = simple_rse(n, k, rss);
-    tss = simple_tss(bar_y, y);
 
-    r2 = simple_r2(rss, tss);
+    r2 = simple_r2(rss, bar_y, y);
     adjr2 = simple_adjr2(n, k, r2);
 
     std::cout << "Intercept: " << intercept << std::endl;
@@ -68,17 +67,13 @@ double simple_rse(int n, int k, double rss) {
     return std::pow(rss / (n - k - 1), 0.5);
 }
 
-double simple_tss(double bar_y, Eigen::Ref<Eigen::VectorXd> y) {
+double simple_r2(double rss, double bar_y, Eigen::Ref<Eigen::VectorXd> y) {
     double tss = 0.0;
 
     for (int i = 0; i < y.size(); i++) {
         tss += std::pow(std::abs(y[i] - bar_y), 2);
     }
 
-    return tss;
-}
-
-double simple_r2(double rss, double tss) {
     return 1.0 - (rss / tss);
 }
 
