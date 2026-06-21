@@ -10,22 +10,20 @@ void setup(
     std::cout << "Enter number of observations: ";
     std::cin >> n;
 
+    y.resize(n);
+
     std::cout << "Enter number of predictors: ";
     std::cin >> k;
 
     p = k + 1;
-
-    y.resize(n);
     bar_x.resize(p);
     x.resize(n, p);
 
     std::cout << "Enter y values separated by commas: " << std::endl;
-
     vectorize(y);
-    tensorize(p, bar_x, x);
-
     bar_y = mean_vector(y);
 
+    tensorize(bar_x, x);
     std::cout << "x.transpose:\n";
     print_matrix(x);
 
@@ -46,10 +44,10 @@ void vectorize(Eigen::Ref<Eigen::VectorXd> v) {
     }
 }
 
-void tensorize(int p, Eigen::VectorXd &bar_x, Eigen::MatrixXd &x) {
+void tensorize(Eigen::VectorXd &bar_x, Eigen::MatrixXd &x) {
     x.col(0).setOnes();
 
-    for (int i = 1; i < p; i++) {
+    for (int i = 1; i < x.cols(); i++) {
         std::cout << "Enter x_" << i;
         std::cout << " values separated by commas: " << std::endl;
         vectorize(x.col(i));
