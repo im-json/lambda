@@ -9,4 +9,4 @@ void model(
 
 void vectorize(Eigen::Ref<Eigen::VectorXd> v);
 
-void tensorize(Eigen::VectorXd &bar_x, Eigen::MatrixXd &x);
+void tensorize(Eigen::MatrixXd &x);

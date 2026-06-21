@@ -23,7 +23,8 @@ void model(
     vectorize(y);
     bar_y = y.mean();
 
-    tensorize(bar_x, x);
+    tensorize(x);
+    bar_x = x.colwise().mean();
     std::cout << "x.transpose:\n" << x.transpose() << '\n' << std::endl;
 }
 
@@ -41,7 +42,7 @@ void vectorize(Eigen::Ref<Eigen::VectorXd> v) {
     }
 }
 
-void tensorize(Eigen::VectorXd &bar_x, Eigen::MatrixXd &x) {
+void tensorize(Eigen::MatrixXd &x) {
     x.col(0).setOnes();
 
     for (int i = 1; i < x.cols(); i++) {
@@ -49,6 +50,4 @@ void tensorize(Eigen::VectorXd &bar_x, Eigen::MatrixXd &x) {
         std::cout << " values separated by commas: " << std::endl;
         vectorize(x.col(i));
     }
-
-    bar_x = x.colwise().mean();
 }
