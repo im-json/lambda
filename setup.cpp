@@ -4,8 +4,8 @@
 #include "setup.h"
 
 void setup(
-    int &n, int &k, int &p, double &x_bar, double &y_bar,
-    Eigen::MatrixXd &x, Eigen::VectorXd &y
+    int &n, int &k, int &p, double &y_bar, Eigen::VectorXd &x_bar,
+    Eigen::VectorXd &y, Eigen::MatrixXd &x
 ) {
     std::cout << "Enter number of observations: ";
     std::cin >> n;
@@ -16,15 +16,15 @@ void setup(
     p = k + 1;
 
     y.resize(n);
+    x_bar.resize(p);
     x.resize(n, p);
 
     std::cout << "Enter y values separated by commas: " << std::endl;
 
     vectorize(n, y);
-    tensorize(n, p, x);
+    tensorize(n, p, x_bar, x);
 
     y_bar = mean_vector(y);
-    x_bar = mean_matrix(n, x);
 
     std::cout << "x.transpose:\n";
     print_matrix(x);
@@ -46,7 +46,7 @@ void vectorize(int n, Eigen::Ref<Eigen::VectorXd> v) {
     }
 }
 
-void tensorize(int n, int p, Eigen::MatrixXd &x) {
+void tensorize(int n, int p, Eigen::VectorXd &x_bar, Eigen::MatrixXd &x) {
     x.col(0).setOnes();
 
     for (int i = 1; i < p; i++) {
@@ -54,6 +54,8 @@ void tensorize(int n, int p, Eigen::MatrixXd &x) {
         std::cout << " values separated by commas: " << std::endl;
         vectorize(n, x.col(i));
     }
+
+    x_bar = x.colwise().mean();
 }
 
 void print_vector(Eigen::Ref<Eigen::VectorXd> v) {
@@ -66,8 +68,4 @@ void print_matrix(Eigen::MatrixXd &m) {
 
 double mean_vector(Eigen::Ref<Eigen::VectorXd> v) {
     return v.sum() / v.size();
-}
-
-double mean_matrix(int n, Eigen::MatrixXd &m) {
-    return (m.sum() - n) / (m.size() - n);
 }

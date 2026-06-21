@@ -5,16 +5,16 @@
 
 int main() {
     int n, k, p;
-    double x_bar, y_bar;
+    double y_bar;
     Eigen::MatrixXd x;
-    Eigen::VectorXd y;
+    Eigen::VectorXd x_bar, y;
 
-    setup(n, k, p, x_bar, y_bar, x, y);
+    setup(n, k, p, y_bar, x_bar, y, x);
 
     if (k == 1) {
-        simple_summary(n, k, p, x_bar, y_bar, x, y);
+        simple_summary(n, k, p, y_bar, x_bar, y, x);
     } else if (k > 1) {
-        multiple_summary(n, k, p, x_bar, y_bar, x, y);
+        multiple_summary(n, k, p, y_bar, x_bar, y, x);
     }
 
     return 0;

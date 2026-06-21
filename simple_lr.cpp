@@ -5,15 +5,15 @@
 #include "simple_lr.h"
 
 void simple_summary(
-    int n, int k, int p, double x_bar, double y_bar,
-    Eigen::MatrixXd &x, Eigen::VectorXd &y
+    int n, int k, int p, double y_bar, Eigen::VectorXd x_bar,
+    Eigen::VectorXd &y, Eigen::MatrixXd &x
 ) {
     double slope, intercept;
     double rss, rse, tss;
     double r2, adjr2;
 
-    slope = get_slope(n, x_bar, y_bar, x.col(1), y);
-    intercept = get_intercept(slope, x_bar, y_bar);
+    slope = get_slope(n, x_bar[1], y_bar, x.col(1), y);
+    intercept = get_intercept(slope, x_bar[1], y_bar);
 
     rss = get_RSS(n, intercept, slope, x.col(1), y);
     rse = get_RSE(n, k, rss);
@@ -27,6 +27,7 @@ void simple_summary(
 
     std::cout << "Residual standard error: " << rse << " on ";
     std::cout << n - p << " degrees of freedom" << std::endl;
+    
     std::cout << "Multiple R-squared: " << r2 << ", ";
     std::cout << "Adjusted R-squared: " << adjr2 << std::endl;
 }
