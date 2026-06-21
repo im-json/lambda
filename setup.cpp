@@ -3,7 +3,7 @@
 
 #include "setup.h"
 
-void setup(
+void model(
     int &n, int &k, double &bar_y, Eigen::VectorXd &bar_x,
     Eigen::VectorXd &y, Eigen::MatrixXd &x
 ) {

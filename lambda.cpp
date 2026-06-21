@@ -9,7 +9,7 @@ int main() {
     Eigen::VectorXd y, bar_x;
     Eigen::MatrixXd x;
 
-    setup(n, k, bar_y, bar_x, y, x);
+    model(n, k, bar_y, bar_x, y, x);
 
     if (k == 1) {
         simple_summary(n, k, bar_y, bar_x[1], y, x.col(1));
