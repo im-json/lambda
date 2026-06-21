@@ -3,7 +3,7 @@
 #include <Eigen/Dense>
 
 void setup(
-    int &n, int &k, int &p, double &bar_y, Eigen::VectorXd &bar_x,
+    int &n, int &k, double &bar_y, Eigen::VectorXd &bar_x,
     Eigen::VectorXd &y, Eigen::MatrixXd &x
 );
 

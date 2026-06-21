@@ -4,7 +4,7 @@
 #include "setup.h"
 
 void setup(
-    int &n, int &k, int &p, double &bar_y, Eigen::VectorXd &bar_x,
+    int &n, int &k, double &bar_y, Eigen::VectorXd &bar_x,
     Eigen::VectorXd &y, Eigen::MatrixXd &x
 ) {
     std::cout << "Enter number of observations: ";
@@ -15,7 +15,7 @@ void setup(
     std::cout << "Enter number of predictors: ";
     std::cin >> k;
 
-    p = k + 1;
+    int p = k + 1;
     bar_x.resize(p);
     x.resize(n, p);
 
