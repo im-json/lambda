@@ -17,9 +17,10 @@ void simple_summary(int n, int k, Model m, Summary &s) {
     rss = simple_rss(intercept, slope, m.y, m.x.col(1));
     rse = simple_rse(n, k, rss);
     tss = simple_tss(m.bar_y, m.y);
-    ess = simple_ess(rss, tss);
 
-    r2 = simple_r2(rss, tss);
+    ess = tss - rss;
+    r2 = 1.0 - (rss / tss);
+
     adjr2 = simple_adjr2(n, k, r2);
     fstat = simple_fstat(n, k, rss, ess);
     se = simple_se(n, m.bar_x[1], m.x.col(1));
@@ -75,14 +76,6 @@ double simple_tss(double bar_y, Eigen::Ref<Eigen::VectorXd> y) {
     }
 
     return tss;
-}
-
-double simple_ess(double rss, double tss) {
-    return tss - rss;
-}
-
-double simple_r2(double rss, double tss) {
-    return 1.0 - (rss / tss);
 }
 
 double simple_adjr2(int n, int k, double r2) {

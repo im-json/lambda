@@ -20,10 +20,6 @@ double simple_rse(int n, int k, double rss);
 
 double simple_tss(double bar_y, Eigen::Ref<Eigen::VectorXd> y);
 
-double simple_ess(double rss, double tss);
-
-double simple_r2(double rss, double tss);
-
 double simple_adjr2(int n, int k, double r2);
 
 double simple_fstat(int n, int k, double rss, double ess);
