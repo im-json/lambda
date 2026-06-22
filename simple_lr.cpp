@@ -10,21 +10,19 @@ void simple_summary(int n, int k, Model m, Summary &s) {
     double r2, adjr2, fstat, se, tstat, pval;
 
     slope = simple_slope(m.bar_y, m.bar_x[1], m.y, m.x.col(1));
-    intercept = simple_intercept(slope, m.bar_y, m.bar_x[1]);
-
-    dof = n - k - 1;
+    intercept = m.bar_y - (slope * m.bar_x[1]);
     
     rss = simple_rss(intercept, slope, m.y, m.x.col(1));
-    rse = simple_rse(n, k, rss);
+    rse = std::sqrt(rss / (n - k - 1));
     tss = simple_tss(m.bar_y, m.y);
 
     ess = tss - rss;
     r2 = 1.0 - (rss / tss);
 
-    adjr2 = simple_adjr2(n, k, r2);
-    fstat = simple_fstat(n, k, rss, ess);
+    adjr2 = 1.0 - ((1.0 - r2)*(n - 1) / (n - k - 1));
+    fstat = (ess / k) / (rss / (n - k - 1));
     se = simple_se(n, m.bar_x[1], m.x.col(1));
-    tstat = simple_tstat(slope, se);
+    tstat = slope / se;
 
     Eigen::VectorXd beta(2);
     beta << intercept, slope;
@@ -46,10 +44,6 @@ double simple_slope(
     return num / den;
 }
 
-double simple_intercept(double slope, double bar_y, double bar_x) {
-    return bar_y - (slope * bar_x);
-}
-
 double simple_rss(
     double intercept, double slope,
     Eigen::Ref<Eigen::VectorXd> y, Eigen::Ref<Eigen::VectorXd> x
@@ -64,10 +58,6 @@ double simple_rss(
     return rss;
 }
 
-double simple_rse(int n, int k, double rss) {
-    return std::pow(rss / (n - k - 1), 0.5);
-}
-
 double simple_tss(double bar_y, Eigen::Ref<Eigen::VectorXd> y) {
     double tss = 0.0;
 
@@ -78,14 +68,6 @@ double simple_tss(double bar_y, Eigen::Ref<Eigen::VectorXd> y) {
     return tss;
 }
 
-double simple_adjr2(int n, int k, double r2) {
-    return 1.0 - ((1.0 - r2)*(n - 1) / (n - k - 1));
-}
-
-double simple_fstat(int n, int k, double rss, double ess) {
-    return (ess / k) / (rss / (n - k - 1));
-}
-
 double simple_se(int n, double bar_x, Eigen::Ref<Eigen::VectorXd> x) {
     int num = 0.0;
 
@@ -93,9 +75,5 @@ double simple_se(int n, double bar_x, Eigen::Ref<Eigen::VectorXd> x) {
         num += std::pow(x[i] - bar_x, 2);
     }
 
-    return std::pow(num / std::pow(n, 2), 0.5);
-}
-
-double simple_tstat(double slope, double se) {
-    return slope / se;
+    return std::sqrt(num / std::pow(n, 2));
 }
