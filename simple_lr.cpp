@@ -24,7 +24,7 @@ void simple_summary(int n, int k, Model m, Summary &s) {
     Eigen::VectorXd hat_beta(2);
     hat_beta << intercept, slope;
 
-    s = {hat_beta, rse, r2, adjr2, dof};
+    s = {hat_beta, rse, r2, adjr2};
 }
 
 double simple_slope(
