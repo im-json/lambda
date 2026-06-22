@@ -5,17 +5,18 @@
 
 int main() {
     int n, k;
-    double bar_y;
-    Eigen::VectorXd y, bar_x;
-    Eigen::MatrixXd x;
+    Model m;
+    Summary s;
 
-    model(n, k, bar_y, bar_x, y, x);
+    lm(n, k, m);
 
     if (k == 1) {
-        simple_summary(n, k, bar_y, bar_x[1], y, x.col(1));
+        simple_summary(n, k, m, s);
     } else if (k > 1) {
-        multiple_summary(n, k, bar_y, bar_x, y, x);
+        multiple_summary(n, k, m, s);
     }
+
+    print_summary(s);
 
     return 0;
 }

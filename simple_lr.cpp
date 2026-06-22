@@ -4,31 +4,27 @@
 #include "setup.h"
 #include "simple_lr.h"
 
-void simple_summary(
-    int n, int k, double bar_y, double bar_x,
-    Eigen::Ref<Eigen::VectorXd> y, Eigen::Ref<Eigen::VectorXd> x
-) {
+void simple_summary(int n, int k, Model m, Summary &s) {
+    int dof;
     double slope, intercept;
     double rss, rse;
     double r2, adjr2;
 
-    slope = simple_slope(bar_y, bar_x, y, x);
-    intercept = simple_intercept(slope, bar_y, bar_x);
+    slope = simple_slope(m.bar_y, m.bar_x[1], m.y, m.x.col(1));
+    intercept = simple_intercept(slope, m.bar_y, m.bar_x[1]);
 
-    rss = simple_rss(intercept, slope, y, x);
+    dof = n - k - 1;
+
+    rss = simple_rss(intercept, slope, m.y, m.x.col(1));
     rse = simple_rse(n, k, rss);
 
-    r2 = simple_r2(rss, bar_y, y);
+    r2 = simple_r2(rss, m.bar_y, m.y);
     adjr2 = simple_adjr2(n, k, r2);
 
-    std::cout << "Intercept: " << intercept << std::endl;
-    std::cout << "Slope: " << slope << std::endl;
+    Eigen::VectorXd hat_beta(2);
+    hat_beta << intercept, slope;
 
-    std::cout << "Residual standard error: " << rse << " on ";
-    std::cout << n - k - 1 << " degrees of freedom" << std::endl;
-    
-    std::cout << "Multiple R-squared: " << r2 << ", ";
-    std::cout << "Adjusted R-squared: " << adjr2 << std::endl;
+    s = {hat_beta, rse, r2, adjr2, dof};
 }
 
 double simple_slope(
