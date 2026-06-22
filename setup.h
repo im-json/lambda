@@ -10,7 +10,7 @@ struct Model {
 };
 
 struct Summary {
-    Eigen::VectorXd hat_beta;
+    Eigen::VectorXd beta;
     double rse;
     double r2;
     double adjr2;

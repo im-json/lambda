@@ -21,10 +21,10 @@ void simple_summary(int n, int k, Model m, Summary &s) {
     r2 = simple_r2(rss, m.bar_y, m.y);
     adjr2 = simple_adjr2(n, k, r2);
 
-    Eigen::VectorXd hat_beta(2);
-    hat_beta << intercept, slope;
+    Eigen::VectorXd beta(2);
+    beta << intercept, slope;
 
-    s = {hat_beta, rse, r2, adjr2};
+    s = {beta, rse, r2, adjr2};
 }
 
 double simple_slope(

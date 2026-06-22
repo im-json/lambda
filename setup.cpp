@@ -34,10 +34,10 @@ void lm(int &n, int &k, Model &m) {
 }
 
 void print_summary(int n, int k, Summary s) {
-    std::cout << "Intercept: " << s.hat_beta[0] << std::endl;
+    std::cout << "Intercept: " << s.beta[0] << std::endl;
 
-    for (int i = 1; i < s.hat_beta.size(); i++) {
-        std::cout << "beta_" << i << ": " << s.hat_beta[i] << std::endl;
+    for (int i = 1; i < s.beta.size(); i++) {
+        std::cout << "beta_" << i << ": " << s.beta[i] << std::endl;
     }
 
     std::cout << "Residual standard error: " << s.rse << " on ";
