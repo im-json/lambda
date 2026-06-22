@@ -3,10 +3,10 @@
 #include <Eigen/Dense>
 
 struct Model {
-    double bar_y;
-    Eigen::VectorXd bar_x;
-    Eigen::VectorXd y;
     Eigen::MatrixXd x;
+    Eigen::VectorXd y;
+    Eigen::VectorXd bar_x;
+    double bar_y;
 };
 
 struct Summary {

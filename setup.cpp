@@ -30,7 +30,7 @@ void lm(int &n, int &k, Model &m) {
     bar_x.resize(p);
     bar_x = x.colwise().mean();
 
-    m = {bar_y, bar_x, y, x};
+    m = {x, y, bar_x, bar_y};
 }
 
 void print_summary(Summary s) {
