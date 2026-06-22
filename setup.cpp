@@ -1,5 +1,4 @@
 #include <iostream>
-#include <cmath>
 
 #include "setup.h"
 
@@ -45,6 +44,9 @@ void print_summary(int n, int k, Summary s) {
     
     std::cout << "Multiple R-squared: " << s.r2 << ", ";
     std::cout << "Adjusted R-squared: " << s.adjr2 << std::endl;
+
+    std::cout << "F-statistic: " << s.fstat << " on " << k << " and ";
+    std::cout << n - k - 1 << " DF" << std::endl;
 }
 
 void vectorize(Eigen::Ref<Eigen::VectorXd> v) {

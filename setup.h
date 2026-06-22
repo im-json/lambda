@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cmath>
+#include <algorithm>
 #include <Eigen/Dense>
 
 struct Model {
@@ -14,6 +16,8 @@ struct Summary {
     double rse;
     double r2;
     double adjr2;
+    double fstat;
+    double pval;
 };
 
 void lm(int &n, int &k, Model &m);
