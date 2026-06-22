@@ -33,7 +33,7 @@ void lm(int &n, int &k, Model &m) {
     m = {x, y, bar_x, bar_y};
 }
 
-void print_summary(Summary s) {
+void print_summary(int n, int k, Summary s) {
     std::cout << "Intercept: " << s.hat_beta[0] << std::endl;
 
     for (int i = 1; i < s.hat_beta.size(); i++) {
@@ -41,7 +41,7 @@ void print_summary(Summary s) {
     }
 
     std::cout << "Residual standard error: " << s.rse << " on ";
-    std::cout << s.dof << " degrees of freedom" << std::endl;
+    std::cout << n - k - 1 << " degrees of freedom" << std::endl;
     
     std::cout << "Multiple R-squared: " << s.r2 << ", ";
     std::cout << "Adjusted R-squared: " << s.adjr2 << std::endl;
