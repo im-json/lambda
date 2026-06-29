@@ -8,7 +8,7 @@ void vectorize(Eigen::Ref<Eigen::VectorXd> v) {
 
     for (int i = 0; i < v.size(); i++) {
         std::cin >> d;
-        v(i) = d;
+        v << d;
         if (i == v.size() - 1) {
             break;
         }
