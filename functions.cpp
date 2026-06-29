@@ -22,7 +22,7 @@ void lm(Model &m) {
     std::cout << "Enter y values separated by commas: " << std::endl;
     
     vectorize(y);
-    matricize(x);
+    design(x);
     xtx = x.transpose() * x;
 
     std::cout << "x.transpose:\n" << x.transpose() << '\n' << std::endl;

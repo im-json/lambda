@@ -25,4 +25,4 @@ struct Summary {
 
 void vectorize(Eigen::Ref<Eigen::VectorXd> v);
 
-void matricize(Eigen::MatrixXd &x);
+void design(Eigen::MatrixXd &x);

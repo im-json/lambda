@@ -16,7 +16,7 @@ void vectorize(Eigen::Ref<Eigen::VectorXd> v) {
     }
 }
 
-void matricize(Eigen::MatrixXd &x) {
+void design(Eigen::MatrixXd &x) {
     x.col(0).setOnes();
 
     for (int i = 1; i < x.cols(); i++) {
