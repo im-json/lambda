@@ -17,9 +17,11 @@ void setup(DataFrame &df) {
 
     d.v.resize(n);
 
+    std::cout << "Enter vectors in csv format: ";
+    std::cout << "name,v1,v2,v3,..." << std::endl;
+
     for (int i = 0; i < c; i++) {
-        std::cout << "Enter vector " << i + 1 << " in csv format: ";
-        std::cout << "name,v1,v2,v3,..." << std::endl;
+        std::cout << "Enter vector " << i + 1 << ": ";
         std::cin.ignore();
 
         vectorize(d);
@@ -56,13 +58,14 @@ void lm(Model &m, DataFrame df) {
     Eigen::VectorXd y, beta, epsilon, bar_x;
     Eigen::MatrixXd x, xtx;
 
+    std::cout << std::endl;
     std::cout << "Enter number of predictors: ";
     std::cin >> k;
 
     y.resize(df.n);
     x.resize(df.n, k + 1);
 
-    std::cout << "Enter y vector name: " << std::endl;
+    std::cout << "Enter y vector name: ";
     std::cin >> name;
 
     for (int i = 0; i < df.c; i++) {
@@ -72,7 +75,7 @@ void lm(Model &m, DataFrame df) {
         }
     }
 
-    std::cout << "y vector is: " << y.transpose() << std::endl;
+    std::cout << "y is: " << y.transpose() << std::endl;
 
     design(x, df);
 
@@ -97,7 +100,7 @@ void design(Eigen::MatrixXd &x, DataFrame df) {
     x.col(0).setOnes();
 
     for (int i = 1; i < x.cols(); i++) {
-        std::cout << "Enter vector name for x_{i" << i << "}: ";
+        std::cout << "Enter vector name for x_" << i << ": ";
         std::cin >> name;
 
         for (int j = 0; j < df.c; j++) {
