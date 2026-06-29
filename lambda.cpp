@@ -16,7 +16,7 @@ int main() {
         multiple_summary(n, k, m, s);
     }
 
-    print_summary(n, k, s);
+    print_summary(n, k, m, s);
 
     return 0;
 }

@@ -3,9 +3,10 @@
 #include "setup.h"
 
 void lm(int &n, int &k, Model &m) {
-    double bar_y;
-    Eigen::VectorXd bar_x, y;
     Eigen::MatrixXd x;
+    Eigen::VectorXd y, beta, bar_x;
+
+    double bar_y;
 
     std::cout << "Enter number of observations: ";
     std::cin >> n;
@@ -17,7 +18,6 @@ void lm(int &n, int &k, Model &m) {
     
     y.resize(n);
     vectorize(y);
-    bar_y = y.mean();
 
     int p = k + 1;
 
@@ -26,17 +26,26 @@ void lm(int &n, int &k, Model &m) {
 
     std::cout << "x.transpose:\n" << x.transpose() << '\n' << std::endl;
 
+    beta = coefficients(x, y);
+    
+    bar_y = y.mean();
+
     bar_x.resize(p);
     bar_x = x.colwise().mean();
 
-    m = {x, y, bar_x, bar_y};
+    m = {x, y, beta, bar_x, bar_y};
 }
 
-void print_summary(int n, int k, Summary s) {
-    std::cout << "Intercept: " << s.beta[0] << std::endl;
+Eigen::VectorXd coefficients(Eigen::MatrixXd x, Eigen::VectorXd y) {
+    Eigen::MatrixXd xtx = x.transpose() * x;
+    return xtx.inverse() * x.transpose() * y;
+}
 
-    for (int i = 1; i < s.beta.size(); i++) {
-        std::cout << "beta_" << i << ": " << s.beta[i] << std::endl;
+void print_summary(int n, int k, Model m, Summary s) {
+    std::cout << "Intercept: " << m.beta[0] << std::endl;
+
+    for (int i = 1; i < m.beta.size(); i++) {
+        std::cout << "beta_" << i << ": " << m.beta[i] << std::endl;
     }
 
     std::cout << "Residual standard error: " << s.rse << " on ";
