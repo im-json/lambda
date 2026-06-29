@@ -1,4 +1,4 @@
 #pragma once
 
-#include "math.h"
-#include "functions.h"
+#include "data.h"
+#include "stats.h"

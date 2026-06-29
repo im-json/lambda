@@ -1,41 +1,7 @@
 #include <iostream>
+#include <string>
 
-#include "math.h"
-#include "functions.h"
-
-void lm(Model &m) {
-    int n, k;
-    double bar_y;
-    
-    Eigen::VectorXd y, beta, epsilon, bar_x;
-    Eigen::MatrixXd x, xtx;
-
-    std::cout << "Enter number of observations: ";
-    std::cin >> n;
-
-    std::cout << "Enter number of predictors: ";
-    std::cin >> k;
-
-    y.resize(n);
-    x.resize(n, k + 1);
-
-    std::cout << "Enter y values separated by commas: " << std::endl;
-    
-    vectorize(y);
-    design(x);
-    xtx = x.transpose() * x;
-
-    std::cout << "x.transpose:\n" << x.transpose() << '\n' << std::endl;
-
-    beta = xtx.inverse() * x.transpose() * y;
-    epsilon = y - (x * beta);
-
-    bar_y = y.mean();
-    bar_x.resize(k + 1);
-    bar_x = x.colwise().mean();
-
-    m = {n, k, bar_y, bar_x, beta, epsilon, y, x};
-}
+#include "stats.h"
 
 void summary(Model m, Summary &s) {
     double rss, rse, tss, ess;
@@ -72,4 +38,12 @@ void print_summary(Model m, Summary s) {
 
     std::cout << "F-statistic: " << s.fstat << " on " << m.k << " and ";
     std::cout << m.n - m.k - 1 << " DF" << std::endl;
+}
+
+void aov() {
+
+}
+
+void print_aov() {
+
 }
