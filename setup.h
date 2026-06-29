@@ -8,6 +8,7 @@ struct Model {
     Eigen::MatrixXd x;
     Eigen::VectorXd y;
     Eigen::VectorXd beta;
+    Eigen::VectorXd epsilon;
     Eigen::VectorXd bar_x;
     double bar_y;
 };
@@ -23,6 +24,10 @@ struct Summary {
 void lm(int &n, int &k, Model &m);
 
 Eigen::VectorXd coefficients(Eigen::MatrixXd x, Eigen::VectorXd y);
+
+Eigen::VectorXd errors(
+    Eigen::MatrixXd x, Eigen::VectorXd y, Eigen::VectorXd beta
+);
 
 void print_summary(int n, int k, Model m, Summary s);
 

@@ -4,7 +4,7 @@
 
 void lm(int &n, int &k, Model &m) {
     Eigen::MatrixXd x;
-    Eigen::VectorXd y, beta, bar_x;
+    Eigen::VectorXd y, beta, epsilon, bar_x;
 
     double bar_y;
 
@@ -15,7 +15,7 @@ void lm(int &n, int &k, Model &m) {
     std::cin >> k;
 
     std::cout << "Enter y values separated by commas: " << std::endl;
-    
+
     y.resize(n);
     vectorize(y);
 
@@ -27,18 +27,25 @@ void lm(int &n, int &k, Model &m) {
     std::cout << "x.transpose:\n" << x.transpose() << '\n' << std::endl;
 
     beta = coefficients(x, y);
-    
+    epsilon = errors(x, y, beta);
+
     bar_y = y.mean();
 
     bar_x.resize(p);
     bar_x = x.colwise().mean();
 
-    m = {x, y, beta, bar_x, bar_y};
+    m = {x, y, beta, epsilon, bar_x, bar_y};
 }
 
 Eigen::VectorXd coefficients(Eigen::MatrixXd x, Eigen::VectorXd y) {
     Eigen::MatrixXd xtx = x.transpose() * x;
     return xtx.inverse() * x.transpose() * y;
+}
+
+Eigen::VectorXd errors(
+    Eigen::MatrixXd x, Eigen::VectorXd y, Eigen::VectorXd beta
+) {
+    return y - (x * beta);
 }
 
 void print_summary(int n, int k, Model m, Summary s) {
