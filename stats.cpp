@@ -16,7 +16,7 @@ void summary(Model m, Summary &s) {
 
     Eigen::MatrixXd xtx = m.x.transpose() * m.x;
     Eigen::MatrixXd var = s.rse * s.rse * xtx.inverse();
-    
+
     s.secoeff = var.diagonal().array().sqrt();
     s.t_val = m.beta.array() / s.secoeff.array();
 
@@ -28,8 +28,23 @@ void summary(Model m, Summary &s) {
 }
 
 void print_summary(Model m, Summary s) {
-    std::cout << "Coefficients: " << std::endl;
-    std::cout << "\t\tEstimate\tStd. Error\tt value\t\tPr(>|t|)" << std::endl;
+    std::cout << "Call:" << std::endl;
+
+    for (int i = 0; i < m.k + 1; i++) {
+        if (!i) {
+            std::cout << "lm(formula = " << m.names[0] << " ~ ";
+            continue;
+        }
+        std::cout << m.names[i];
+        if (i == m.k) {
+            std::cout << ")\n" << std::endl;
+            break;
+        }
+        std::cout << " + ";
+    }
+
+    std::cout << "Coefficients:\n\t\tEstimate\tStd. Error\t";
+    std::cout << "t value\t\tPr(>|t|)" << std::endl;
 
     for (int i = 0; i < m.beta.size(); i++) {
         if (!i) {
@@ -38,7 +53,7 @@ void print_summary(Model m, Summary s) {
             std::cout << "beta_" << i << ": ";
         }
         std::cout << '\t' << m.beta[i] << '\t' << s.secoeff[i];
-        std::cout << '\t' << s.t_val[i] << '\t' << std::endl;
+        std::cout << '\t' << s.t_val[i] << "\t" << std::endl;
     }
 
     std::cout << std::endl;
