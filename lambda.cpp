@@ -4,13 +4,12 @@
 #include "lambda.h"
 
 int main() {
-    DataFrame df;
+    DataFrame d;
     Model m;
     Summary s;
 
-    setup(df);
-
-    lm(m, df);
+    df(d);
+    lm(m, d);
     summary(m, s);
 
     return 0;

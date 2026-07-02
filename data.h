@@ -3,15 +3,15 @@
 #include <vector>
 #include <Eigen/Dense>
 
-struct Data {
+struct Column {
     std::string name;
-    Eigen::VectorXd v;
+    Eigen::VectorXd vals;
 };
 
 struct DataFrame {
-    int c;
+    int m;
     int n;
-    std::vector<Data> col;
+    std::vector<Column> data;
 };
 
 struct Model {
@@ -25,10 +25,10 @@ struct Model {
     Eigen::MatrixXd x;
 };
 
-void setup(DataFrame &df);
+void df(DataFrame &d);
 
-void vectorize(Data &d);
+void vectorize(Column &d);
 
-void lm(Model &m, DataFrame df);
+void lm(Model &m, DataFrame d);
 
-void design(Eigen::MatrixXd &x, DataFrame df);
+void design(Eigen::MatrixXd &x, DataFrame d);

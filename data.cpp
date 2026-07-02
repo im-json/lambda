@@ -3,53 +3,53 @@
 
 #include "data.h"
 
-void setup(DataFrame &df) {
-    int c, n;
+void df(DataFrame &d) {
+    int m, n;
     std::string name;
-    Data d;
-    std::vector<Data> vec;
+    Column c;
+    std::vector<Column> data;
 
     std::cout << "Enter number of vectors: ";
-    std::cin >> c;
+    std::cin >> m;
 
     std::cout << "Enter length of vectors: ";
     std::cin >> n;
 
-    d.v.resize(n);
+    c.vals.resize(n);
 
     std::cout << "Enter vectors in csv format: ";
     std::cout << "name,v1,v2,v3,..." << std::endl;
 
-    for (int i = 0; i < c; i++) {
+    for (int i = 0; i < m; i++) {
         std::cout << "Enter vector " << i + 1 << ": ";
         std::cin.ignore();
 
-        vectorize(d);
-        vec.push_back(d);
+        vectorize(c);
+        data.push_back(c);
     }
 
-    df = {c, n, vec};
+    d = {m, n, data};
 }
 
-void vectorize(Data &d) {
+void vectorize(Column &c) {
     std::string name;
     double num;
-    char c;
+    char comma;
 
     std::getline(std::cin, name, ',');
-    d.name = name;
+    c.name = name;
 
-    for (int i = 0; i < d.v.size(); i++) {
+    for (int i = 0; i < c.vals.size(); i++) {
         std::cin >> num;
-        d.v(i) = num;
-        if (i == d.v.size() - 1) {
+        c.vals(i) = num;
+        if (i == c.vals.size() - 1) {
             break;
         }
-        std::cin >> c;
+        std::cin >> comma;
     }
 }
 
-void lm(Model &m, DataFrame df) {
+void lm(Model &m, DataFrame d) {
     int k;
     double bar_y;
     
@@ -62,22 +62,22 @@ void lm(Model &m, DataFrame df) {
     std::cout << "Enter number of predictors: ";
     std::cin >> k;
 
-    y.resize(df.n);
-    x.resize(df.n, k + 1);
+    y.resize(d.n);
+    x.resize(d.n, k + 1);
 
     std::cout << "Enter y vector name: ";
     std::cin >> name;
 
-    for (int i = 0; i < df.c; i++) {
-        if (df.col[i].name == name) {
-            y = df.col[i].v;
+    for (int i = 0; i < d.m; i++) {
+        if (d.data[i].name == name) {
+            y = d.data[i].vals;
             break;
         }
     }
 
     std::cout << "y is: " << y.transpose() << std::endl;
 
-    design(x, df);
+    design(x, d);
 
     xtx = x.transpose() * x;
 
@@ -92,10 +92,10 @@ void lm(Model &m, DataFrame df) {
 
     std::cout << std::endl;
 
-    m = {df.n, k, bar_y, bar_x, beta, epsilon, y, x};
+    m = {d.n, k, bar_y, bar_x, beta, epsilon, y, x};
 }
 
-void design(Eigen::MatrixXd &x, DataFrame df) {
+void design(Eigen::MatrixXd &x, DataFrame d) {
     std::string name;
     x.col(0).setOnes();
 
@@ -103,9 +103,9 @@ void design(Eigen::MatrixXd &x, DataFrame df) {
         std::cout << "Enter vector name for x_" << i << ": ";
         std::cin >> name;
 
-        for (int j = 0; j < df.c; j++) {
-            if (df.col[j].name == name) {
-                x.col(i) = df.col[j].v;
+        for (int j = 0; j < d.m; j++) {
+            if (d.data[j].name == name) {
+                x.col(i) = d.data[j].vals;
                 break;
             }
         }
