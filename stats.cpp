@@ -11,10 +11,9 @@ void summary(Model m, Summary &s) {
     double se = ((m.x.array() - m.bar_x[1]).square()).sum();
 
     Eigen::MatrixXd xtx = m.x.transpose() * m.x;
-
     Eigen::MatrixXd var = rse * rse * xtx.inverse();
-
     Eigen::VectorXd secoeff = var.diagonal().array().sqrt();
+    Eigen::VectorXd t_val = m.beta.array() / secoeff.array();
 
     double tss = ((m.y.array() - m.bar_y).square()).sum();
     double ess = tss - rss;
@@ -24,23 +23,26 @@ void summary(Model m, Summary &s) {
     double fstat = (ess / m.k) / (rss / (m.n - m.k - 1));
     double tstat = m.beta[1] / se;
 
-    s = {rse, r2, adjr2, fstat, pval, secoeff};
+    s = {rse, r2, adjr2, fstat, pval, secoeff, t_val};
 
     print_summary(m, s);
 }
 
 void print_summary(Model m, Summary s) {
     std::cout << "Coefficients: " << std::endl;
-    std::cout << "\t\tEstimate\tStd. Error\tt value\tPr(>|t|)" << std::endl;
+    std::cout << "\t\tEstimate\tStd. Error\tt value\t\tPr(>|t|)" << std::endl;
+
     for (int i = 0; i < m.beta.size(); i++) {
         if (!i) {
             std::cout << "Intercept: ";
         } else {
             std::cout << "beta_" << i << ": ";
         }
-        std::cout << '\t' << m.beta[i] << '\t' << s.secoeff[i] << std::endl;
+        std::cout << '\t' << m.beta[i] << '\t' << s.secoeff[i];
+        std::cout << '\t' << s.t_val[i] << '\t' << std::endl;
     }
 
+    std::cout << std::endl;
     std::cout << "Residual standard error: " << s.rse << " on ";
     std::cout << m.n - m.k - 1 << " degrees of freedom" << std::endl;
     
