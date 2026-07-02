@@ -11,6 +11,7 @@ struct Summary {
     double adjr2;
     double fstat;
     double pval;
+    Eigen::VectorXd secoeff;
 };
 
 void summary(Model m, Summary &s);

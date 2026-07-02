@@ -32,9 +32,9 @@ void df(DataFrame &d) {
 }
 
 void vectorize(Column &c) {
-    std::string name;
     double num;
     char comma;
+    std::string name;
 
     std::getline(std::cin, name, ',');
     c.name = name;
@@ -51,19 +51,14 @@ void vectorize(Column &c) {
 
 void lm(Model &m, DataFrame d) {
     int k;
-    double bar_y;
-    
     std::string name;
-
-    Eigen::VectorXd y, beta, epsilon, bar_x;
-    Eigen::MatrixXd x, xtx;
 
     std::cout << std::endl;
     std::cout << "Enter number of predictors: ";
     std::cin >> k;
 
-    y.resize(d.n);
-    x.resize(d.n, k + 1);
+    Eigen::VectorXd y(d.n);
+    Eigen::MatrixXd x(d.n, k + 1);
 
     std::cout << "Enter y vector name: ";
     std::cin >> name;
@@ -79,16 +74,15 @@ void lm(Model &m, DataFrame d) {
 
     design(x, d);
 
-    xtx = x.transpose() * x;
+    Eigen::MatrixXd xtx = x.transpose() * x;
 
     std::cout << "x.transpose:\n" << x.transpose() << std::endl;
 
-    beta = xtx.inverse() * x.transpose() * y;
-    epsilon = y - (x * beta);
+    Eigen::VectorXd beta = xtx.inverse() * x.transpose() * y;
+    Eigen::VectorXd epsilon = y - (x * beta);
 
-    bar_y = y.mean();
-    bar_x.resize(k + 1);
-    bar_x = x.colwise().mean();
+    double bar_y = y.mean();
+    Eigen::VectorXd bar_x = x.colwise().mean();
 
     std::cout << std::endl;
 
