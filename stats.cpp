@@ -7,23 +7,22 @@ void summary(Model m, Summary &s) {
     double pval;
 
     double rss = m.epsilon.squaredNorm();
-    double rse = std::sqrt(rss / (m.n - m.k - 1));
-    double se = ((m.x.array() - m.bar_x[1]).square()).sum();
-
-    Eigen::MatrixXd xtx = m.x.transpose() * m.x;
-    Eigen::MatrixXd var = rse * rse * xtx.inverse();
-    Eigen::VectorXd secoeff = var.diagonal().array().sqrt();
-    Eigen::VectorXd t_val = m.beta.array() / secoeff.array();
-
     double tss = ((m.y.array() - m.bar_y).square()).sum();
     double ess = tss - rss;
-
-    double r2 = 1.0 - (rss / tss);
-    double adjr2 = 1.0 - ((1.0 - r2) * (m.n - 1) / (m.n - m.k - 1));
-    double fstat = (ess / m.k) / (rss / (m.n - m.k - 1));
+    double se = ((m.x.array() - m.bar_x[1]).square()).sum();
     double tstat = m.beta[1] / se;
 
-    s = {rse, r2, adjr2, fstat, pval, secoeff, t_val};
+    s.rse = std::sqrt(rss / (m.n - m.k - 1));
+
+    Eigen::MatrixXd xtx = m.x.transpose() * m.x;
+    Eigen::MatrixXd var = s.rse * s.rse * xtx.inverse();
+    
+    s.secoeff = var.diagonal().array().sqrt();
+    s.t_val = m.beta.array() / s.secoeff.array();
+
+    s.r2 = 1.0 - (rss / tss);
+    s.adjr2 = 1.0 - ((1.0 - s.r2) * (m.n - 1) / (m.n - m.k - 1));
+    s.fstat = (ess / m.k) / (rss / (m.n - m.k - 1));
 
     print_summary(m, s);
 }
