@@ -20,7 +20,7 @@ struct Model {
     double bar_y;
     Eigen::VectorXd bar_x;
     Eigen::VectorXd beta;
-    Eigen::VectorXd epsilon;
+    Eigen::VectorXd res;
     Eigen::VectorXd y;
     Eigen::MatrixXd x;
     std::vector<std::string> names;

@@ -6,7 +6,7 @@
 void summary(Model m, Summary &s) {
     double pval;
 
-    double rss = m.epsilon.squaredNorm();
+    double rss = m.res.squaredNorm();
     double tss = ((m.y.array() - m.bar_y).square()).sum();
     double ess = tss - rss;
     double se = ((m.x.array() - m.bar_x[1]).square()).sum();
@@ -28,13 +28,9 @@ void summary(Model m, Summary &s) {
 }
 
 void print_summary(Model m, Summary s) {
-    std::cout << "Call:" << std::endl;
+    std::cout << "Call:\nlm(formula = " << m.names[0] << " ~ ";
 
-    for (int i = 0; i < m.k + 1; i++) {
-        if (!i) {
-            std::cout << "lm(formula = " << m.names[0] << " ~ ";
-            continue;
-        }
+    for (int i = 1; i < m.k + 1; i++) {
         std::cout << m.names[i];
         if (i == m.k) {
             std::cout << ")\n" << std::endl;
@@ -42,6 +38,13 @@ void print_summary(Model m, Summary s) {
         }
         std::cout << " + ";
     }
+
+    // Eigen::VectorXd q(5);
+    // quantile(m.res, q);
+
+    // std::cout << "Residuals:\nMin\t\t1Q\t\tMedian\t\t3Q\t\tMax\n";
+    // std::cout << q[0] << '\t' << q[1] << '\t' << q[2];
+    // std::cout << '\t' << q[3] << '\t' << q[4] << std::endl;
 
     std::cout << "Coefficients:\n\t\tEstimate\tStd. Error\t";
     std::cout << "t value\t\tPr(>|t|)" << std::endl;

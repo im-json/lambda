@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <Eigen/Dense>
+#include <cmath>
 
 #include "data.h"
 
@@ -18,6 +19,8 @@ struct Summary {
 void summary(Model m, Summary &s);
 
 void print_summary(Model m, Summary s);
+
+void quantile(Eigen::VectorXd v, Eigen::VectorXd &q);
 
 void aov();
 

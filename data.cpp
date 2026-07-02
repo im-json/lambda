@@ -61,7 +61,7 @@ void lm(Model &m, DataFrame d) {
     Eigen::MatrixXd xtx = m.x.transpose() * m.x;
 
     m.beta = xtx.inverse() * m.x.transpose() * m.y;
-    m.epsilon = m.y - (m.x * m.beta);
+    m.res = m.y - (m.x * m.beta);
 
     std::cout << std::endl;
 }
