@@ -7,8 +7,12 @@ void aov(Model m, Anova &a) {
     a.rss = m.res.squaredNorm();
     a.rse = std::sqrt(a.rss / (m.n - m.k - 1));
 
+    a.df.resize(m.k + 2);
     a.seqss.resize(m.k + 1);
     a.fval.resize(m.k + 1);
+
+    a.df.setConstant(1.0);
+    a.df.tail(1) << m.n - m.k - 1;
 
     Eigen::HouseholderQR<Eigen::MatrixXd> qr(m.x);
     Eigen::MatrixXd i = Eigen::MatrixXd::Identity(m.n, m.k + 1);
@@ -24,7 +28,6 @@ void aov(Model m, Anova &a) {
 
 void print_aov(Model m, Anova a) {
     std::cout << std::fixed << std::setprecision(6);
-
     std::cout << "Call:\naov(formula = " << m.names[0] << " ~ ";
 
     for (int i = 1; i < m.k + 1; i++) {
@@ -53,22 +56,31 @@ void print_aov(Model m, Anova a) {
 
     std::cout << a.rss << "\nDeg. of Freedom\t";
 
-    for (int k = 0; k < m.k; k++) {
-        std::cout << "1\t\t";
+    std::cout << std::fixed << std::setprecision(0);
+
+    for (int k = 1; k <= m.k + 1; k++) {
+        std::cout << a.df[k] << "\t\t";
+        if (k == m.k + 1) {
+            std::cout << '\n' << std::endl;
+        }
     }
 
-    std::cout << m.n - m.k - 1 << '\n' << std::endl;
+    std::cout << std::fixed << std::setprecision(7);
 
     std::cout << "Residual standard error: " << a.rse << std::endl;
-    std::cout << "Estimated effects may be unbalanced" << std::endl;
+    std::cout << "Estimated effects may be unbalanced\n" << std::endl;
 }
 
 void anova(Model m, Anova &a) {
     a.rss = m.res.squaredNorm();
     a.rse = std::sqrt(a.rss / (m.n - m.k - 1));
 
-    a.seqss.resize(m.k + 1);
+    a.seqss.resize(m.k + 2);
+    a.meansq.resize(m.k + 1);
     a.fval.resize(m.k + 1);
+
+    a.df.setConstant(1.0);
+    a.df.tail(1) << m.n - m.k - 1;
 
     Eigen::HouseholderQR<Eigen::MatrixXd> qr(m.x);
     Eigen::MatrixXd i = Eigen::MatrixXd::Identity(m.n, m.k + 1);
@@ -77,6 +89,7 @@ void anova(Model m, Anova &a) {
 
     for (int i = 0; i <= m.k; i++) {
         a.seqss[i] = std::pow(proj[i], 2);
+        a.meansq[i] = std::pow(proj[i], 2) / a.df[i];
     }
 
     double se = (m.x.array() - m.bar_x[1]).square().sum();
@@ -100,13 +113,17 @@ void print_anova(Model m, Anova a) {
             std::cout << '\t';
         }
 
-        std::cout << "1\t" << a.seqss[i] << "\t0\t" << a.fval[i];
+        std::cout << "1\t" << a.seqss[i] << '\t' << a.meansq[i];
+        std::cout << '\t' << a.fval[i];
         
         std::cout << std::fixed << std::setprecision(5);
         std::cout << "\t0" << std::endl;
     }
 
+    std::cout << std::fixed << std::setprecision(0);
+    std::cout << "Residuals\t" << a.df[m.k + 1] << '\t';
+
     std::cout << std::fixed << std::setprecision(4);
-    std::cout << "Residuals\t" << m.n - m.k - 1 << '\t' << a.rss;
-    std::cout << "\t0\n---\n" << std::endl; 
+    std::cout << a.rss << '\t' << a.rss / a.df[m.k + 1];
+    std::cout << "\t0\n---\n" << std::endl;
 }

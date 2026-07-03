@@ -10,7 +10,9 @@
 struct Anova {
     double rse;
     double rss;
+    Eigen::VectorXd df;
     Eigen::VectorXd seqss;
+    Eigen::VectorXd meansq;
     Eigen::VectorXd fval;
 };
 
