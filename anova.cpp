@@ -3,13 +3,9 @@
 
 #include "anova.h"
 
-void aov(Model m, Anova &a) {
-    a.rss = m.res.squaredNorm();
-    a.rse = std::sqrt(a.rss / (m.n - m.k - 1));
-
-    a.df.resize(m.k + 2);
+void sequence(Model m, Anova &a) {
     a.seqss.resize(m.k + 1);
-    a.fval.resize(m.k + 1);
+    a.df.resize(m.k + 2);
 
     a.df.setConstant(1.0);
     a.df.tail(1) << m.n - m.k - 1;
@@ -22,8 +18,31 @@ void aov(Model m, Anova &a) {
     for (int i = 0; i <= m.k; i++) {
         a.seqss[i] = std::pow(proj[i], 2);
     }
+}
+
+void aov(Model m, Anova &a) {
+    sequence(m, a);
+
+    a.rss = m.res.squaredNorm();
+    a.rse = std::sqrt(a.rss / (m.n - m.k - 1));
 
     print_aov(m, a);
+}
+
+void anova(Model m, Anova &a) {
+    sequence(m, a);
+
+    a.meansq.resize(m.k + 1);
+    a.fval.resize(m.k + 1);
+
+    for (int i = 0; i <= m.k; i++) {
+        a.meansq[i] = a.seqss[i] / a.df[i];
+    }
+
+    double se = (m.x.array() - m.bar_x[1]).square().sum();
+    a.fval = (m.beta / se).array().square();
+
+    print_anova(m, a);
 }
 
 void print_aov(Model m, Anova a) {
@@ -71,33 +90,6 @@ void print_aov(Model m, Anova a) {
     std::cout << "Estimated effects may be unbalanced\n" << std::endl;
 }
 
-void anova(Model m, Anova &a) {
-    a.rss = m.res.squaredNorm();
-    a.rse = std::sqrt(a.rss / (m.n - m.k - 1));
-
-    a.seqss.resize(m.k + 2);
-    a.meansq.resize(m.k + 1);
-    a.fval.resize(m.k + 1);
-
-    a.df.setConstant(1.0);
-    a.df.tail(1) << m.n - m.k - 1;
-
-    Eigen::HouseholderQR<Eigen::MatrixXd> qr(m.x);
-    Eigen::MatrixXd i = Eigen::MatrixXd::Identity(m.n, m.k + 1);
-    Eigen::MatrixXd q = qr.householderQ() * i;
-    Eigen::VectorXd proj = q.transpose() * m.y;
-
-    for (int i = 0; i <= m.k; i++) {
-        a.seqss[i] = std::pow(proj[i], 2);
-        a.meansq[i] = std::pow(proj[i], 2) / a.df[i];
-    }
-
-    double se = (m.x.array() - m.bar_x[1]).square().sum();
-    a.fval = (m.beta / se).array().square();
-
-    print_anova(m, a);
-}
-
 void print_anova(Model m, Anova a) {
     std::cout << "Analysis of Variance Table\n" << std::endl;
     std::cout << "Response: " << m.names[0] << std::endl;;
@@ -125,5 +117,5 @@ void print_anova(Model m, Anova a) {
 
     std::cout << std::fixed << std::setprecision(4);
     std::cout << a.rss << '\t' << a.rss / a.df[m.k + 1];
-    std::cout << "\t0\n---\n" << std::endl;
+    std::cout << "\n---\n" << std::endl;
 }

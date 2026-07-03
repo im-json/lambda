@@ -16,10 +16,12 @@ struct Anova {
     Eigen::VectorXd fval;
 };
 
+void sequence(Model m, Anova &a);
+
 void aov(Model m, Anova &a);
 
-void print_aov(Model m, Anova a);
-
 void anova(Model m, Anova &a);
+
+void print_aov(Model m, Anova a);
 
 void print_anova(Model m, Anova a);
