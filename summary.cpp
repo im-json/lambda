@@ -1,15 +1,15 @@
 #include <iostream>
 #include <string>
 
-#include "stats.h"
+#include "summary.h"
 
 void summary(Model m, Summary &s) {
     double pval;
 
     double rss = m.res.squaredNorm();
-    double tss = ((m.y.array() - m.bar_y).square()).sum();
+    double tss = (m.y.array() - m.bar_y).square().sum();
     double ess = tss - rss;
-    double se = ((m.x.array() - m.bar_x[1]).square()).sum();
+    double se = (m.x.array() - m.bar_x[1]).square().sum();
     double tstat = m.beta[1] / se;
 
     s.rse = std::sqrt(rss / (m.n - m.k - 1));
@@ -22,7 +22,7 @@ void summary(Model m, Summary &s) {
 
     s.r2 = 1.0 - (rss / tss);
     s.adjr2 = 1.0 - ((1.0 - s.r2) * (m.n - 1) / (m.n - m.k - 1));
-    s.fstat = (ess / m.k) / (rss / (m.n - m.k - 1));
+    s.fval = (ess / m.k) / (rss / (m.n - m.k - 1));
 
     print_summary(m, s);
 }
@@ -47,16 +47,23 @@ void print_summary(Model m, Summary s) {
     // std::cout << '\t' << q[3] << '\t' << q[4] << std::endl;
 
     std::cout << "Coefficients:\n\t\tEstimate\tStd. Error\t";
-    std::cout << "t value\t\tPr(>|t|)" << std::endl;
+    std::cout << "t value\tPr(>|t|)\n(Intercept)\t";
 
     for (int i = 0; i < m.beta.size(); i++) {
-        if (!i) {
-            std::cout << "Intercept: ";
-        } else {
-            std::cout << "beta_" << i << ": ";
+        std::cout << std::fixed << std::setprecision(6);
+        std::cout << m.beta[i] << '\t' << s.secoeff[i] << '\t';
+        std::cout << std::fixed << std::setprecision(3);
+        std::cout << s.t_val[i] << "\t";
+        std::cout << std::fixed << std::setprecision(4);
+        std::cout << "0" << std::endl;
+
+        if (i == m.beta.size() - 1) {
+            break;
         }
-        std::cout << '\t' << m.beta[i] << '\t' << s.secoeff[i];
-        std::cout << '\t' << s.t_val[i] << "\t" << std::endl;
+        std::cout << m.names[i + 1] << '\t';
+        if (m.names[i + 1].size() < 8) {
+            std::cout << '\t';
+        }
     }
 
     std::cout << std::endl;
@@ -66,14 +73,6 @@ void print_summary(Model m, Summary s) {
     std::cout << "Multiple R-squared: " << s.r2 << ", ";
     std::cout << "Adjusted R-squared: " << s.adjr2 << std::endl;
 
-    std::cout << "F-statistic: " << s.fstat << " on " << m.k << " and ";
-    std::cout << m.n - m.k - 1 << " DF" << std::endl;
-}
-
-void aov() {
-
-}
-
-void print_aov() {
-
+    std::cout << "F-statistic: " << s.fval << " on " << m.k << " and ";
+    std::cout << m.n - m.k - 1 << " DF\n" << std::endl;
 }

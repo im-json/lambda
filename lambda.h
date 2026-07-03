@@ -1,4 +1,6 @@
 #pragma once
 
 #include "data.h"
-#include "stats.h"
+#include "model.h"
+#include "summary.h"
+#include "anova.h"

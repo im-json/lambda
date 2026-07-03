@@ -1,0 +1,23 @@
+#pragma once
+
+#include <vector>
+#include <Eigen/Dense>
+#include <cmath>
+#include <iomanip>
+
+#include "model.h"
+
+struct Anova {
+    double rse;
+    double rss;
+    Eigen::VectorXd seqss;
+    Eigen::VectorXd fval;
+};
+
+void aov(Model m, Anova &a);
+
+void print_aov(Model m, Anova a);
+
+void anova(Model m, Anova &a);
+
+void print_anova(Model m, Anova a);
