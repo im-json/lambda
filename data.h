@@ -8,7 +8,7 @@
 
 struct Input {
     std::string obj;
-    std::string func;
+    std::string fn;
     std::string args;
 };
 

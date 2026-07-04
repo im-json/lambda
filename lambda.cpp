@@ -7,7 +7,7 @@ int main() {
     Input i;
     Memory m;
 
-    while (i.func != "q(" && i.func != "quit(") {
+    while (i.fn != "q(" && i.fn != "quit(") {
         readline(i, m);
     }
 

@@ -29,7 +29,7 @@ void readline(Input &i, Memory &m) {
     }
 
     i.obj = s.substr(0, arrow);
-    i.func = s.substr(arrow, l - arrow + 1);
+    i.fn = s.substr(arrow, l - arrow + 1);
     i.args = s.substr(l + 1, r - l - 1);
 
     // std::cout << "i.obj: " << i.obj << std::endl;
@@ -37,22 +37,22 @@ void readline(Input &i, Memory &m) {
     // std::cout << "i.args: " << i.args << std::endl;
 
     if (!i.obj.empty()) {
-        if (i.func.find("<-c(") != std::string::npos) {
+        if (i.fn.find("<-c(") != std::string::npos) {
             add_vector(i, m);
         }
-        if (i.func.find("<-lm(") != std::string::npos) {
+        if (i.fn.find("<-lm(") != std::string::npos) {
             add_model(i, m);
         }
     }
 
     if (i.obj.empty()) {
-        if (i.func == "summary(") {
+        if (i.fn == "summary(") {
             add_summary(i, m);
         }
-        if (i.func == "aov(") {
+        if (i.fn == "aov(") {
             add_aov(i, m);
         }
-        if (i.func == "anova(") {
+        if (i.fn == "anova(") {
             add_anova(i, m);
         }
     }
