@@ -31,7 +31,7 @@ struct Model {
 };
 
 struct Memory {
-    std::vector<Column> cols;
+    std::vector<Column> data;
     std::vector<Model> models;
 };
 

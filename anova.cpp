@@ -33,6 +33,9 @@ void aov(Model m, Anova &a) {
 void anova(Model m, Anova &a) {
     sequence(m, a);
 
+    a.rss = m.res.squaredNorm();
+    a.rse = std::sqrt(a.rss / (m.n - m.k - 1));
+
     a.meansq.resize(m.k + 1);
     a.fval.resize(m.k + 1);
 

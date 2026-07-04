@@ -108,7 +108,7 @@ void add_vector(Input i, Memory &d) {
 
     c.vals = Eigen::Map<Eigen::VectorXd>(vec.data(), vec.size());
 
-    d.cols.push_back(c);
+    d.data.push_back(c);
 }
 
 void print_formula(std::vector<std::string> call) {
