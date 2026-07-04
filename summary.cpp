@@ -28,10 +28,10 @@ void summary(Model m, Summary &s) {
 }
 
 void print_summary(Model m, Summary s) {
-    std::cout << "Call:\nlm(formula = " << m.names[0] << " ~ ";
+    std::cout << "Call:\nlm(formula = " << m.call[0] << " ~ ";
 
     for (int i = 1; i < m.k + 1; i++) {
-        std::cout << m.names[i];
+        std::cout << m.call[i];
         if (i == m.k) {
             std::cout << ")\n" << std::endl;
             break;
@@ -60,8 +60,8 @@ void print_summary(Model m, Summary s) {
         if (i == m.beta.size() - 1) {
             break;
         }
-        std::cout << m.names[i + 1] << '\t';
-        if (m.names[i + 1].size() < 8) {
+        std::cout << m.call[i + 1] << '\t';
+        if (m.call[i + 1].size() < 8) {
             std::cout << '\t';
         }
     }

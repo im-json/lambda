@@ -29,7 +29,7 @@ void response(Model &m, DataFrame d) {
     std::cout << "Enter y vector name: ";
     std::cin >> name;
 
-    m.names.push_back(name);
+    m.call.push_back(name);
 
     for (int i = 0; i < d.m; i++) {
         if (d.data[i].name == name) {
@@ -51,7 +51,7 @@ void design(Model &m, DataFrame d) {
         std::cout << "Enter vector name for x_" << i << ": ";
         std::cin >> name;
 
-        m.names.push_back(name);
+        m.call.push_back(name);
 
         for (int j = 0; j < d.m; j++) {
             if (d.data[j].name == name) {

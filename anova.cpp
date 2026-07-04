@@ -47,10 +47,10 @@ void anova(Model m, Anova &a) {
 
 void print_aov(Model m, Anova a) {
     std::cout << std::fixed << std::setprecision(6);
-    std::cout << "Call:\naov(formula = " << m.names[0] << " ~ ";
+    std::cout << "Call:\naov(formula = " << m.call[0] << " ~ ";
 
     for (int i = 1; i < m.k + 1; i++) {
-        std::cout << m.names[i];
+        std::cout << m.call[i];
         if (i == m.k) {
             std::cout << ")\n" << std::endl;
             break;
@@ -61,8 +61,8 @@ void print_aov(Model m, Anova a) {
     std::cout << "Terms:\n\t\t";
 
     for (int i = 1; i < m.k + 1; i++) {
-        std::cout << m.names[i] << "\t";
-        if (m.names[i].size() < 8) {
+        std::cout << m.call[i] << "\t";
+        if (m.call[i].size() < 8) {
             std::cout << '\t';
         }
     }
@@ -92,16 +92,16 @@ void print_aov(Model m, Anova a) {
 
 void print_anova(Model m, Anova a) {
     std::cout << "Analysis of Variance Table\n" << std::endl;
-    std::cout << "Response: " << m.names[0] << std::endl;;
+    std::cout << "Response: " << m.call[0] << std::endl;;
 
     std::cout << "\t\tDf\tSum Sq\tMean Sq\tF value\tPr(>F)\n";
 
     for (int i = 1; i < m.beta.size(); i++) {
         std::cout << std::fixed << std::setprecision(4);
 
-        std::cout << m.names[i] << '\t';
+        std::cout << m.call[i] << '\t';
 
-        if (m.names[i].size() < 8) {
+        if (m.call[i].size() < 8) {
             std::cout << '\t';
         }
 

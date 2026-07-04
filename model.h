@@ -14,7 +14,7 @@ struct Model {
     Eigen::VectorXd res;
     Eigen::VectorXd y;
     Eigen::MatrixXd x;
-    std::vector<std::string> names;
+    std::vector<std::string> call;
 };
 
 void lm(Model &m, DataFrame d);
