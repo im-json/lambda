@@ -3,14 +3,18 @@
 #include "data.h"
 
 void df(DataFrame &d) {
-    Column c;
-    std::vector<Column> data;
-
     std::cout << "Enter number of vectors: ";
     std::cin >> d.m;
 
     std::cout << "Enter length of vectors: ";
     std::cin >> d.n;
+
+    read_csv(d);
+}
+
+void read_csv(DataFrame &d) {
+    Column c;
+    std::vector<Column> data;
 
     c.vals.resize(d.n);
 
