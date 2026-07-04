@@ -1,58 +1,114 @@
-#include <string>
+#include <iostream>
 
 #include "data.h"
+#include "summary.h"
+#include "anova.h"
 
-void df(DataFrame &d) {
-    std::cout << "Enter number of vectors: ";
-    std::cin >> d.m;
+void readline(Input &i, Memory &m) {
+    std::cout << "> ";
 
-    std::cout << "Enter length of vectors: ";
-    std::cin >> d.n;
+    std::string s;
+    std::getline(std::cin, s);
 
-    read_csv(d);
-}
+    s.erase(std::remove(s.begin(), s.end(), ' '), s.end());
 
-void read_csv(DataFrame &d) {
-    Column c;
-    std::vector<Column> data;
+    int arrow = s.find("<-");
+    int l = s.find("(");
+    int r = s.find(")");
 
-    c.vals.resize(d.n);
-
-    std::cout << "Enter vectors in csv format: ";
-    std::cout << "name,v1,v2,v3,..." << std::endl;
-
-    for (int i = 0; i < d.m; i++) {
-        std::cout << "Enter vector " << i + 1 << ": ";
-        std::cin.ignore();
-        vectorize(c);
-        while (c.vals.isZero()) {
-            std::cout << "Zero vectors break linear regression.\n";
-            std::cout << "Enter vector " << i + 1 << " again: ";
-            std::cin.ignore();
-            vectorize(c);
-        }
-        d.data.push_back(c);
+    if (arrow == std::string::npos) {
+        arrow = 0;
     }
 
-    std::cout << std::endl;
+    if (l == std::string::npos) {
+        l = s.size() - 1;
+    }
+
+    if (r == std::string::npos) {
+        r = l;
+    }
+
+    i.obj = s.substr(0, arrow);
+    i.func = s.substr(arrow, l - arrow + 1);
+    i.args = s.substr(l + 1, r - l - 1);
+
+    // std::cout << "i.obj: " << i.obj << std::endl;
+    // std::cout << "i.func: " << i.func << std::endl;
+    // std::cout << "i.args: " << i.args << std::endl;
+
+    if (!i.obj.empty()) {
+        if (i.func.find("<-c(") != std::string::npos) {
+            add_vector(i, m);
+        }
+        if (i.func.find("<-lm(") != std::string::npos) {
+            add_model(i, m);
+        }
+    }
+
+    if (i.obj.empty()) {
+        if (i.func == "summary(") {
+            add_summary(i, m);
+        }
+        if (i.func == "aov(") {
+            add_aov(i, m);
+        }
+        if (i.func == "anova(") {
+            add_anova(i, m);
+        }
+    }
 }
 
-void vectorize(Column &c) {
-    double num;
-    char comma;
-    std::string name;
+void add_summary(Input i, Memory &m) {
+    Summary s;
 
-    std::getline(std::cin, name, ',');
-    c.name = name;
-
-    for (int i = 0; i < c.vals.size(); i++) {
-        std::cin >> num;
-        c.vals(i) = num;
-        if (i == c.vals.size() - 1) {
+    for (int j = 0; j < m.models.size(); j++) {
+        if (m.models[j].name == i.args) {
+            summary(m.models[j], s);
             break;
         }
-        std::cin >> comma;
     }
+}
+
+void add_aov(Input i, Memory &m) {
+    Anova a;
+
+    for (int j = 0; j < m.models.size(); j++) {
+        if (m.models[j].name == i.args) {
+            aov(m.models[j], a);
+            break;
+        }
+    }
+}
+
+void add_anova(Input i, Memory &m) {
+    Anova a;
+
+    for (int j = 0; j < m.models.size(); j++) {
+        if (m.models[j].name == i.args) {
+            anova(m.models[j], a);
+            break;
+        }
+    }
+}
+
+void add_vector(Input i, Memory &d) {
+    std::string num;
+    std::vector<double> vec;
+    Column c;
+
+    c.name = i.obj;
+
+    std::stringstream stream(i.args);
+
+    while (std::getline(stream, num, ',')) {
+        vec.push_back(std::stod(num));
+    }
+
+    c.vals.resize(vec.size());
+
+    c.vals = Eigen::Map<Eigen::VectorXd>(vec.data(), vec.size());
+
+    d.cols.push_back(c);
 }
 
 void print_formula(std::vector<std::string> call) {

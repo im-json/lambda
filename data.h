@@ -1,24 +1,50 @@
 #pragma once
 
-#include <iostream>
+#include <string>
+#include <algorithm>
+#include <sstream>
 #include <vector>
 #include <Eigen/Dense>
+
+struct Input {
+    std::string obj;
+    std::string func;
+    std::string args;
+};
 
 struct Column {
     std::string name;
     Eigen::VectorXd vals;
 };
 
-struct DataFrame {
-    int m;
+struct Model {
     int n;
-    std::vector<Column> data;
+    int k;
+    double bar_y;
+    Eigen::VectorXd bar_x;
+    Eigen::VectorXd beta;
+    Eigen::VectorXd res;
+    Eigen::VectorXd y;
+    Eigen::MatrixXd x;
+    std::string name;
+    std::vector<std::string> call;
 };
 
-void df(DataFrame &d);
+struct Memory {
+    std::vector<Column> cols;
+    std::vector<Model> models;
+};
 
-void read_csv(DataFrame &d);
+void readline(Input &i, Memory &m);
 
-void vectorize(Column &c);
+void add_model(Input i, Memory &m);
+
+void add_summary(Input i, Memory &m);
+
+void add_aov(Input i, Memory &m);
+
+void add_anova(Input i, Memory &m);
+
+void add_vector(Input i, Memory &m);
 
 void print_formula(std::vector<std::string> call);

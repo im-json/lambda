@@ -4,16 +4,12 @@
 #include "lambda.h"
 
 int main() {
-    DataFrame d;
-    Model m;
-    Summary s;
-    Anova a;
+    Input i;
+    Memory m;
 
-    df(d);
-    lm(m, d);
-    summary(m, s);
-    aov(m, a);
-    anova(m, a);
+    while (i.func != "q(" && i.func != "quit(") {
+        readline(i, m);
+    }
 
     return 0;
 }

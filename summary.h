@@ -6,7 +6,7 @@
 #include <iomanip>
 
 #include "summary.h"
-#include "model.h"
+#include "data.h"
 
 struct Summary {
     double rse;

@@ -5,7 +5,7 @@
 #include <cmath>
 #include <iomanip>
 
-#include "model.h"
+#include "data.h"
 
 struct Anova {
     double rse;
