@@ -2,6 +2,7 @@
 #include <string>
 
 #include "summary.h"
+#include "data.h"
 
 void summary(Model m, Summary &s) {
     double pval;
@@ -28,16 +29,9 @@ void summary(Model m, Summary &s) {
 }
 
 void print_summary(Model m, Summary s) {
-    std::cout << "Call:\nlm(formula = " << m.call[0] << " ~ ";
+    std::cout << "Call:\nlm";
 
-    for (int i = 1; i < m.k + 1; i++) {
-        std::cout << m.call[i];
-        if (i == m.k) {
-            std::cout << ")\n" << std::endl;
-            break;
-        }
-        std::cout << " + ";
-    }
+    print_formula(m.call);
 
     // Eigen::VectorXd q(5);
     // quantile(m.res, q);
@@ -47,23 +41,24 @@ void print_summary(Model m, Summary s) {
     // std::cout << '\t' << q[3] << '\t' << q[4] << std::endl;
 
     std::cout << "Coefficients:\n\t\tEstimate\tStd. Error\t";
-    std::cout << "t value\tPr(>|t|)\n(Intercept)\t";
+    std::cout << "t value\tPr(>|t|)\n";
 
     for (int i = 0; i < m.beta.size(); i++) {
+        if (!i) {
+            std::cout << "(Intercept)\t";
+        } else {
+            std::cout << m.call[i] << '\t';
+            if (m.call[i].size() < 8) {
+                std::cout << '\t';
+            }
+        }
+
         std::cout << std::fixed << std::setprecision(6);
         std::cout << m.beta[i] << '\t' << s.secoeff[i] << '\t';
         std::cout << std::fixed << std::setprecision(3);
         std::cout << s.t_val[i] << "\t";
         std::cout << std::fixed << std::setprecision(4);
         std::cout << "0" << std::endl;
-
-        if (i == m.beta.size() - 1) {
-            break;
-        }
-        std::cout << m.call[i + 1] << '\t';
-        if (m.call[i + 1].size() < 8) {
-            std::cout << '\t';
-        }
     }
 
     std::cout << std::endl;

@@ -18,3 +18,5 @@ struct DataFrame {
 void df(DataFrame &d);
 
 void vectorize(Column &c);
+
+void print_formula(std::vector<std::string> call);

@@ -2,6 +2,7 @@
 #include <string>
 
 #include "anova.h"
+#include "data.h"
 
 void sequence(Model m, Anova &a) {
     a.seqss.resize(m.k + 1);
@@ -47,16 +48,9 @@ void anova(Model m, Anova &a) {
 
 void print_aov(Model m, Anova a) {
     std::cout << std::fixed << std::setprecision(6);
-    std::cout << "Call:\naov(formula = " << m.call[0] << " ~ ";
+    std::cout << "Call:\naov";
 
-    for (int i = 1; i < m.k + 1; i++) {
-        std::cout << m.call[i];
-        if (i == m.k) {
-            std::cout << ")\n" << std::endl;
-            break;
-        }
-        std::cout << " + ";
-    }
+    print_formula(m.call);
 
     std::cout << "Terms:\n\t\t";
 

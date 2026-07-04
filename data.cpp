@@ -20,8 +20,13 @@ void df(DataFrame &d) {
     for (int i = 0; i < d.m; i++) {
         std::cout << "Enter vector " << i + 1 << ": ";
         std::cin.ignore();
-
         vectorize(c);
+        while (c.vals.isZero()) {
+            std::cout << "Zero vectors break linear regression.\n";
+            std::cout << "Enter vector " << i + 1 << " again: ";
+            std::cin.ignore();
+            vectorize(c);
+        }
         d.data.push_back(c);
     }
 
@@ -44,4 +49,18 @@ void vectorize(Column &c) {
         }
         std::cin >> comma;
     }
+}
+
+void print_formula(std::vector<std::string> call) {
+    std::cout << "(formula = " << call[0] << " ~ ";
+
+    for (int i = 1; i <= call.size(); i++) {
+        std::cout << call[i];
+        if (i == call.size() - 1) {
+            break;
+        }
+        std::cout << " + ";
+    }
+
+    std::cout << ")\n" << std::endl;
 }
