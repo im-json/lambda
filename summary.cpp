@@ -2,9 +2,11 @@
 #include <string>
 
 #include "summary.h"
-#include "data.h"
 
 void summary(Model m, Summary &s) {
+    s.n = m.n;
+    s.k = m.k;
+
     double pval;
 
     double rss = m.res.squaredNorm();
@@ -18,20 +20,21 @@ void summary(Model m, Summary &s) {
     Eigen::MatrixXd xtx = m.x.transpose() * m.x;
     Eigen::MatrixXd var = s.rse * s.rse * xtx.inverse();
 
+    s.call = m.call;
+
+    s.beta = m.beta;
     s.secoeff = var.diagonal().array().sqrt();
     s.t_val = m.beta.array() / s.secoeff.array();
 
     s.r2 = 1.0 - (rss / tss);
     s.adjr2 = 1.0 - ((1.0 - s.r2) * (m.n - 1) / (m.n - m.k - 1));
     s.fval = (ess / m.k) / (rss / (m.n - m.k - 1));
-
-    print_summary(m, s);
 }
 
-void print_summary(Model m, Summary s) {
+void print_summary(Summary s) {
     std::cout << "Call:\nlm";
 
-    print_formula(m.call);
+    print_formula(s.call);
 
     // Eigen::VectorXd q(5);
     // quantile(m.res, q);
@@ -43,18 +46,18 @@ void print_summary(Model m, Summary s) {
     std::cout << "Coefficients:\n\t\tEstimate\tStd. Error\t";
     std::cout << "t value\tPr(>|t|)\n";
 
-    for (int i = 0; i < m.beta.size(); i++) {
+    for (int i = 0; i < s.beta.size(); i++) {
         if (!i) {
             std::cout << "(Intercept)\t";
         } else {
-            std::cout << m.call[i] << '\t';
-            if (m.call[i].size() < 8) {
+            std::cout << s.call[i] << '\t';
+            if (s.call[i].size() < 8) {
                 std::cout << '\t';
             }
         }
 
         std::cout << std::fixed << std::setprecision(6);
-        std::cout << m.beta[i] << '\t' << s.secoeff[i] << '\t';
+        std::cout << s.beta[i] << '\t' << s.secoeff[i] << '\t';
         std::cout << std::fixed << std::setprecision(3);
         std::cout << s.t_val[i] << "\t";
         std::cout << std::fixed << std::setprecision(4);
@@ -63,11 +66,11 @@ void print_summary(Model m, Summary s) {
 
     std::cout << std::endl;
     std::cout << "Residual standard error: " << s.rse << " on ";
-    std::cout << m.n - m.k - 1 << " degrees of freedom" << std::endl;
+    std::cout << s.n - s.k - 1 << " degrees of freedom" << std::endl;
     
     std::cout << "Multiple R-squared: " << s.r2 << ", ";
     std::cout << "Adjusted R-squared: " << s.adjr2 << std::endl;
 
-    std::cout << "F-statistic: " << s.fval << " on " << m.k << " and ";
-    std::cout << m.n - m.k - 1 << " DF\n" << std::endl;
+    std::cout << "F-statistic: " << s.fval << " on " << s.k << " and ";
+    std::cout << s.n - s.k - 1 << " DF\n" << std::endl;
 }

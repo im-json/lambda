@@ -2,7 +2,6 @@
 #include <string>
 
 #include "anova.h"
-#include "data.h"
 
 void sequence(Model m, Anova &a) {
     a.seqss.resize(m.k + 1);
@@ -24,20 +23,13 @@ void sequence(Model m, Anova &a) {
 void aov(Model m, Anova &a) {
     sequence(m, a);
 
-    a.rss = m.res.squaredNorm();
-    a.rse = std::sqrt(a.rss / (m.n - m.k - 1));
-
-    print_aov(m, a);
-}
-
-void anova(Model m, Anova &a) {
-    sequence(m, a);
-
+    a.k = m.k;
     a.rss = m.res.squaredNorm();
     a.rse = std::sqrt(a.rss / (m.n - m.k - 1));
 
     a.meansq.resize(m.k + 1);
     a.fval.resize(m.k + 1);
+    a.call = m.call;
 
     for (int i = 0; i <= m.k; i++) {
         a.meansq[i] = a.seqss[i] / a.df[i];
@@ -45,28 +37,45 @@ void anova(Model m, Anova &a) {
 
     double se = (m.x.array() - m.bar_x[1]).square().sum();
     a.fval = (m.beta / se).array().square();
-
-    print_anova(m, a);
 }
 
-void print_aov(Model m, Anova a) {
+void anova(Model m, Anova &a) {
+    sequence(m, a);
+
+    a.k = m.k;
+    a.rss = m.res.squaredNorm();
+    a.rse = std::sqrt(a.rss / (m.n - m.k - 1));
+
+    a.meansq.resize(m.k + 1);
+    a.fval.resize(m.k + 1);
+    a.call = m.call;
+
+    for (int i = 0; i <= m.k; i++) {
+        a.meansq[i] = a.seqss[i] / a.df[i];
+    }
+
+    double se = (m.x.array() - m.bar_x[1]).square().sum();
+    a.fval = (m.beta / se).array().square();
+}
+
+void print_aov(Anova a) {
     std::cout << std::fixed << std::setprecision(6);
     std::cout << "Call:\naov";
 
-    print_formula(m.call);
+    print_formula(a.call);
 
     std::cout << "Terms:\n\t\t";
 
-    for (int i = 1; i < m.k + 1; i++) {
-        std::cout << m.call[i] << "\t";
-        if (m.call[i].size() < 8) {
+    for (int i = 1; i < a.k + 1; i++) {
+        std::cout << a.call[i] << "\t";
+        if (a.call[i].size() < 8) {
             std::cout << '\t';
         }
     }
 
     std::cout << "Residuals\nSum of Squares\t";
 
-    for (int j = 1; j < m.k + 1; j++) {
+    for (int j = 1; j < a.k + 1; j++) {
         std::cout << a.seqss[j] << "\t";
     }
 
@@ -74,9 +83,9 @@ void print_aov(Model m, Anova a) {
 
     std::cout << std::fixed << std::setprecision(0);
 
-    for (int k = 1; k <= m.k + 1; k++) {
+    for (int k = 1; k <= a.k + 1; k++) {
         std::cout << a.df[k] << "\t\t";
-        if (k == m.k + 1) {
+        if (k == a.k + 1) {
             std::cout << '\n' << std::endl;
         }
     }
@@ -87,18 +96,18 @@ void print_aov(Model m, Anova a) {
     std::cout << "Estimated effects may be unbalanced\n" << std::endl;
 }
 
-void print_anova(Model m, Anova a) {
+void print_anova(Anova a) {
     std::cout << "Analysis of Variance Table\n" << std::endl;
-    std::cout << "Response: " << m.call[0] << std::endl;;
+    std::cout << "Response: " << a.call[0] << std::endl;;
 
     std::cout << "\t\tDf\tSum Sq\tMean Sq\tF value\tPr(>F)\n";
 
-    for (int i = 1; i < m.beta.size(); i++) {
+    for (int i = 1; i <= a.k; i++) {
         std::cout << std::fixed << std::setprecision(4);
 
-        std::cout << m.call[i] << '\t';
+        std::cout << a.call[i] << '\t';
 
-        if (m.call[i].size() < 8) {
+        if (a.call[i].size() < 8) {
             std::cout << '\t';
         }
 
@@ -110,9 +119,9 @@ void print_anova(Model m, Anova a) {
     }
 
     std::cout << std::fixed << std::setprecision(0);
-    std::cout << "Residuals\t" << a.df[m.k + 1] << '\t';
+    std::cout << "Residuals\t" << a.df[a.k + 1] << '\t';
 
     std::cout << std::fixed << std::setprecision(4);
-    std::cout << a.rss << '\t' << a.rss / a.df[m.k + 1];
+    std::cout << a.rss << '\t' << a.rss / a.df[a.k + 1];
     std::cout << "\n---\n" << std::endl;
 }

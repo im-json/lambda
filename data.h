@@ -1,10 +1,14 @@
 #pragma once
 
 #include <string>
+#include <vector>
 #include <algorithm>
 #include <sstream>
-#include <vector>
 #include <Eigen/Dense>
+
+#include "model.h"
+#include "summary.h"
+#include "anova.h"
 
 struct Input {
     std::string obj;
@@ -17,25 +21,23 @@ struct Column {
     Eigen::VectorXd vals;
 };
 
-struct Model {
-    int n;
-    int k;
-    double bar_y;
-    Eigen::VectorXd bar_x;
-    Eigen::VectorXd beta;
-    Eigen::VectorXd res;
-    Eigen::VectorXd y;
-    Eigen::MatrixXd x;
-    std::string name;
-    std::vector<std::string> call;
-};
-
 struct Memory {
     std::vector<Column> data;
     std::vector<Model> models;
+    std::vector<Summary> summaries;
+    std::vector<Anova> aovs;
+    std::vector<Anova> anovas;
 };
 
 void readline(Input &i, Memory &m);
+
+void find_memory(Input i, Memory m);
+
+void find_vector(Input i, Memory m, Eigen::VectorXd &v);
+
+void add_length(Input i, Memory &m);
+
+void add_mean(Input i, Memory &m);
 
 void add_model(Input i, Memory &m);
 
@@ -47,4 +49,4 @@ void add_anova(Input i, Memory &m);
 
 void add_vector(Input i, Memory &m);
 
-void print_formula(std::vector<std::string> call);
+void add_model(Input i, Memory &d);
