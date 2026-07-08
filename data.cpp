@@ -23,17 +23,17 @@ void functions(Input i, Memory m, Object &o) {
         find_memory(i, m);
     }
 
-    if (i.fn.find("c") != t) {
+    if (i.fn == "c") {
         add_vector(i, m, o);
-    } else if (i.fn.find("length") != t) {
+    } else if (i.fn == "length") {
         add_length(i, m, o);
-    } else if (i.fn.find("mean") != t) {
+    } else if (i.fn == "mean") {
         add_mean(i, m, o);
-    } else if (i.fn.find("lm") != t) {
+    } else if (i.fn == "lm") {
         add_model(i, m, o);
-    } else if (i.fn.find("summary") != t) {
+    } else if (i.fn == "summary") {
         add_summary(i, m, o);
-    } else if (i.fn.find("aov") != t || i.fn.find("anova") != t) {
+    } else if (i.fn == "aov" || i.fn == "anova") {
         add_anova(i, m, o);
     }
 }
