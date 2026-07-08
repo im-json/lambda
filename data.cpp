@@ -19,21 +19,21 @@ void functions(Input i, Memory m, Object &o) {
 
     size_t t = std::string::npos;
 
-    if (i.obj == "" && i.args == "") {
+    if (i.fn == "" && i.args == "") {
         find_memory(i, m);
     }
 
-    if (i.fn.find("c(") != t) {
+    if (i.fn.find("c") != t) {
         add_vector(i, m, o);
-    } else if (i.fn.find("length(") != t) {
+    } else if (i.fn.find("length") != t) {
         add_length(i, m, o);
-    } else if (i.fn.find("mean(") != t) {
+    } else if (i.fn.find("mean") != t) {
         add_mean(i, m, o);
-    } else if (i.fn.find("lm(") != t) {
+    } else if (i.fn.find("lm") != t) {
         add_model(i, m, o);
-    } else if (i.fn.find("summary(") != t) {
+    } else if (i.fn.find("summary") != t) {
         add_summary(i, m, o);
-    } else if (i.fn.find("aov(") != t || i.fn.find("anova(") != t) {
+    } else if (i.fn.find("aov") != t || i.fn.find("anova") != t) {
         add_anova(i, m, o);
     }
 }
@@ -50,21 +50,21 @@ void parse(Input &i) {
     int l = s.find("(");
     int r = s.find(")");
 
-    if (arrow == std::string::npos) {
-        arrow = 0;
-    }
+    size_t t = std::string::npos;
 
-    if (l == std::string::npos) {
-        l = s.size() - 1;
+    if (arrow == t && l == t) {
+        i.obj = s.substr(0, s.size());
+        i.fn = "";
+        i.args = "";
+    } else if (arrow == t) {
+        i.obj = "";
+        i.fn = s.substr(0, l);
+        i.args = s.substr(l + 1, r - l - 1);
+    } else {
+        i.obj = s.substr(0, arrow);
+        i.fn = s.substr(arrow + 2, l - arrow - 2);
+        i.args = s.substr(l + 1, r - l - 1);
     }
-
-    if (r == std::string::npos) {
-        r = l;
-    }
-
-    i.obj = s.substr(0, arrow);
-    i.fn = s.substr(arrow, l - arrow + 1);
-    i.args = s.substr(l + 1, r - l - 1);
 }
 
 void objectify(Object o, Memory &m) {
@@ -86,7 +86,7 @@ void objectify(Object o, Memory &m) {
 
 void find_memory(Input i, Memory m) {
     for (int j = 0; j < m.data.size(); j++) {
-        if (m.data[j].name == i.fn) {
+        if (m.data[j].name == i.obj) {
             for (int k = 0; k < m.data[j].vals.size(); k++) {
                 std::cout << m.data[j].vals[k] << " ";
             }
@@ -96,20 +96,20 @@ void find_memory(Input i, Memory m) {
     }
 
     for (int j = 0; j < m.models.size(); j++) {
-        if (m.models[j].name == i.fn) {
+        if (m.models[j].name == i.obj) {
             return;
         }
     }
 
     for (int j = 0; j < m.summaries.size(); j++) {
-        if (m.summaries[j].name == i.fn) {
+        if (m.summaries[j].name == i.obj) {
             print_summary(m.summaries[j]);
             return;
         }
     }
 
     for (int j = 0; j < m.anovas.size(); j++) {
-        if (m.anovas[j].name == i.fn) {
+        if (m.anovas[j].name == i.obj) {
             if (m.anovas[j].isAov) {
                 print_aov(m.anovas[j]);
             } else {
@@ -207,20 +207,24 @@ void add_anova(Input i, Memory m, Object &o) {
     o.type = 3;
 
     bool isAov;
-    if (i.fn.find("aov(") != std::string::npos) {
+
+    size_t t = std::string::npos;
+
+    if (i.fn.find("aov") != t) {
         isAov = true;
-    } else if (i.fn.find("anova(") != std::string::npos) {
+    } else if (i.fn.find("anova") != t) {
         isAov = false;
     }
 
     Anova a;
     Model mod;
+    Object temp;
 
-    if (i.args.find("~") == std::string::npos) {
-        find_model(i, m, mod);
+    if (i.args.find("~") != t) {
+        add_model(i, m, temp);
+        mod = temp.mod;
     } else {
-        add_model(i, m, o);
-        mod = m.temp;
+        find_model(i, m, mod);
     }
 
     anova(mod, a, isAov);
@@ -323,8 +327,6 @@ void add_model(Input i, Memory d, Object &o) {
     m.beta = xtx.inverse() * m.x.transpose() * m.y;
     m.res = m.y - (m.x * m.beta);
 
-    d.temp = m;
     m.name = i.obj;
-
     o.mod = m;
 }

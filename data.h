@@ -30,7 +30,6 @@ struct Input {
 };
 
 struct Memory {
-    Model temp;
     std::vector<Column> data;
     std::vector<Model> models;
     std::vector<Summary> summaries;
