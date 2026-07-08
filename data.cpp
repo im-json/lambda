@@ -3,6 +3,42 @@
 #include "data.h"
 
 void readline(Input &i, Memory &m) {
+    parse(i);
+
+    Object o;
+
+    functions(i, m, o);
+
+    if (!i.obj.empty()) {
+        objectify(o, m);
+    }
+}
+
+void functions(Input i, Memory m, Object &o) {
+    std::cout << std::defaultfloat << std::setprecision(6);
+
+    size_t t = std::string::npos;
+
+    if (i.obj == "" && i.args == "") {
+        find_memory(i, m);
+    }
+
+    if (i.fn.find("c(") != t) {
+        add_vector(i, m, o);
+    } else if (i.fn.find("length(") != t) {
+        add_length(i, m, o);
+    } else if (i.fn.find("mean(") != t) {
+        add_mean(i, m, o);
+    } else if (i.fn.find("lm(") != t) {
+        add_model(i, m, o);
+    } else if (i.fn.find("summary(") != t) {
+        add_summary(i, m, o);
+    } else if (i.fn.find("aov(") != t || i.fn.find("anova(") != t) {
+        add_anova(i, m, o);
+    }
+}
+
+void parse(Input &i) {
     std::cout << "> ";
 
     std::string s;
@@ -29,31 +65,22 @@ void readline(Input &i, Memory &m) {
     i.obj = s.substr(0, arrow);
     i.fn = s.substr(arrow, l - arrow + 1);
     i.args = s.substr(l + 1, r - l - 1);
+}
 
-    // std::cout << "i.obj: " << i.obj << std::endl;
-    // std::cout << "i.func: " << i.func << std::endl;
-    // std::cout << "i.args: " << i.args << std::endl;
-
-    std::cout << std::defaultfloat << std::setprecision(6);
-
-    if (i.obj == "" && i.args == "") {
-        find_memory(i, m);
-    }
-
-    if (i.fn.find("c(") != std::string::npos) {
-        add_vector(i, m);
-    } else if (i.fn.find("length(") != std::string::npos) {
-        add_length(i, m);
-    } else if (i.fn.find("mean(") != std::string::npos) {
-        add_mean(i, m);
-    } else if (i.fn.find("lm(") != std::string::npos) {
-        add_model(i, m);
-    } else if (i.fn.find("summary(") != std::string::npos) {
-        add_summary(i, m);
-    } else if (i.fn.find("aov(") != std::string::npos) {
-        add_aov(i, m);
-    } else if (i.fn.find("anova(") != std::string::npos) {
-        add_anova(i, m);
+void objectify(Object o, Memory &m) {
+    switch(o.type) {
+        case 0:
+            m.data.push_back(o.vec);
+            break;
+        case 1:
+            m.models.push_back(o.mod);
+            break;
+        case 2:
+            m.summaries.push_back(o.sum);
+            break;
+        case 3:
+            m.anovas.push_back(o.ano);
+            break;
     }
 }
 
@@ -111,45 +138,55 @@ void find_model(Input i, Memory m, Model &mod) {
     }
 }
 
-void add_length(Input i, Memory &m) {
+void add_length(Input i, Memory m, Object &o) {
+    o.type = 0;
+
     Eigen::VectorXd v;
 
     find_vector(i, m, v);
 
     double len = v.size();
 
+    Column c;
+
     if (i.obj.empty()) {
         std::cout << len << std::endl;
         return;
     }
 
-    Column c;
     c.name = i.obj;
     c.vals.resize(1);
     c.vals << len;
-    m.data.push_back(c);
+    
+    o.vec = c;
 }
 
-void add_mean(Input i, Memory &m) {
+void add_mean(Input i, Memory m, Object &o) {
+    o.type = 0;
+
     Eigen::VectorXd v;
 
     find_vector(i, m, v);
 
     double mean = v.sum() / v.size();
 
+    Column c;
+
     if (i.obj.empty()) {
         std::cout << mean << std::endl;
         return;
     }
 
-    Column c;
     c.name = i.obj;
     c.vals.resize(1);
     c.vals << mean;
-    m.data.push_back(c);
+
+    o.vec = c;
 }
 
-void add_summary(Input i, Memory &m) {
+void add_summary(Input i, Memory m, Object &o) {
+    o.type = 2;
+
     Model mod;
     Summary s;
 
@@ -162,42 +199,49 @@ void add_summary(Input i, Memory &m) {
     }
 
     s.name = i.obj;
-    m.summaries.push_back(s);
+
+    o.sum = s;
 }
 
-void add_aov(Input i, Memory &m) {
-    Model mod;
+void add_anova(Input i, Memory m, Object &o) {
+    o.type = 3;
+
+    bool isAov;
+    if (i.fn.find("aov(") != std::string::npos) {
+        isAov = true;
+    } else if (i.fn.find("anova(") != std::string::npos) {
+        isAov = false;
+    }
+
     Anova a;
+    Model mod;
 
-    find_model(i, m, mod);
-    aov(mod, a);
+    if (i.args.find("~") == std::string::npos) {
+        find_model(i, m, mod);
+    } else {
+        add_model(i, m, o);
+        mod = m.temp;
+    }
 
-    if (i.obj.empty()) {        
-        print_aov(a);
+    anova(mod, a, isAov);
+
+    if (i.obj.empty()) {
+        if (a.isAov) {
+            print_aov(a);
+        } else {
+            print_anova(a);
+        }
         return;
     }
 
     a.name = i.obj;
-    m.anovas.push_back(a);
+    
+    o.ano = a;
 }
 
-void add_anova(Input i, Memory &m) {
-    Model mod;
-    Anova a;
+void add_vector(Input i, Memory d, Object &o) {
+    o.type = 0;
 
-    find_model(i, m, mod);
-    anova(mod, a);
-
-    if (i.obj.empty()) {        
-        print_anova(a);
-        return;
-    }
-
-    a.name = i.obj;
-    m.anovas.push_back(a);
-}
-
-void add_vector(Input i, Memory &d) {
     std::string num;
     std::vector<double> v;
 
@@ -206,6 +250,8 @@ void add_vector(Input i, Memory &d) {
     while (std::getline(stream, num, ',')) {
         v.push_back(std::stod(num));
     }
+    
+    Column c;
 
     if (i.obj.empty()) {
         for (int j = 0; j < v.size(); j++) {
@@ -215,14 +261,15 @@ void add_vector(Input i, Memory &d) {
         return;
     }
 
-    Column c;
     c.name = i.obj;
     c.vals.resize(v.size());
     c.vals = Eigen::Map<Eigen::VectorXd>(v.data(), v.size());
-    d.data.push_back(c);
+    
+    o.vec = c;
 }
 
-void add_model(Input i, Memory &d) {
+void add_model(Input i, Memory d, Object &o) {
+    o.type = 1;
 
     int tilde = i.args.find("~");
 
@@ -276,8 +323,8 @@ void add_model(Input i, Memory &d) {
     m.beta = xtx.inverse() * m.x.transpose() * m.y;
     m.res = m.y - (m.x * m.beta);
 
-    if (!i.obj.empty()) {
-        m.name = i.obj;
-        d.models.push_back(m);
-    }
+    d.temp = m;
+    m.name = i.obj;
+
+    o.mod = m;
 }

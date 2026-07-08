@@ -23,9 +23,7 @@ struct Anova {
 
 void sequence(Model m, Anova &a);
 
-void aov(Model m, Anova &a);
-
-void anova(Model m, Anova &a);
+void anova(Model m, Anova &a, bool isAov);
 
 void print_aov(Anova a);
 

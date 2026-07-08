@@ -20,30 +20,10 @@ void sequence(Model m, Anova &a) {
     }
 }
 
-void aov(Model m, Anova &a) {
+void anova(Model m, Anova &a, bool isAov) {
     sequence(m, a);
 
-    a.isAov = true;
-    a.k = m.k;
-    a.rss = m.res.squaredNorm();
-    a.rse = std::sqrt(a.rss / (m.n - m.k - 1));
-
-    a.meansq.resize(m.k + 1);
-    a.fval.resize(m.k + 1);
-    a.call = m.call;
-
-    for (int i = 0; i <= m.k; i++) {
-        a.meansq[i] = a.seqss[i] / a.df[i];
-    }
-
-    double se = (m.x.array() - m.bar_x[1]).square().sum();
-    a.fval = (m.beta / se).array().square();
-}
-
-void anova(Model m, Anova &a) {
-    sequence(m, a);
-
-    a.isAov = false;
+    a.isAov = isAov;
     a.k = m.k;
     a.rss = m.res.squaredNorm();
     a.rse = std::sqrt(a.rss / (m.n - m.k - 1));
