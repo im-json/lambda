@@ -10,22 +10,21 @@
 #include "summary.h"
 #include "anova.h"
 
+struct Column {
+    std::string name;
+    Eigen::VectorXd vals;
+};
+
 struct Input {
     std::string obj;
     std::string fn;
     std::string args;
 };
 
-struct Column {
-    std::string name;
-    Eigen::VectorXd vals;
-};
-
 struct Memory {
     std::vector<Column> data;
     std::vector<Model> models;
     std::vector<Summary> summaries;
-    std::vector<Anova> aovs;
     std::vector<Anova> anovas;
 };
 

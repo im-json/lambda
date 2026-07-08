@@ -23,6 +23,7 @@ void sequence(Model m, Anova &a) {
 void aov(Model m, Anova &a) {
     sequence(m, a);
 
+    a.isAov = true;
     a.k = m.k;
     a.rss = m.res.squaredNorm();
     a.rse = std::sqrt(a.rss / (m.n - m.k - 1));
@@ -42,6 +43,7 @@ void aov(Model m, Anova &a) {
 void anova(Model m, Anova &a) {
     sequence(m, a);
 
+    a.isAov = false;
     a.k = m.k;
     a.rss = m.res.squaredNorm();
     a.rse = std::sqrt(a.rss / (m.n - m.k - 1));

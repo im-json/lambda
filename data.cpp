@@ -81,16 +81,13 @@ void find_memory(Input i, Memory m) {
         }
     }
 
-    for (int j = 0; j < m.aovs.size(); j++) {
-        if (m.aovs[j].name == i.fn) {
-            print_aov(m.aovs[j]);
-            return;
-        }
-    }
-
     for (int j = 0; j < m.anovas.size(); j++) {
         if (m.anovas[j].name == i.fn) {
-            print_anova(m.anovas[j]);
+            if (m.anovas[j].isAov) {
+                print_aov(m.anovas[j]);
+            } else {
+                print_anova(m.anovas[j]);
+            }
             return;
         }
     }
@@ -181,7 +178,7 @@ void add_aov(Input i, Memory &m) {
     }
 
     a.name = i.obj;
-    m.aovs.push_back(a);
+    m.anovas.push_back(a);
 }
 
 void add_anova(Input i, Memory &m) {

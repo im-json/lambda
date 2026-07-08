@@ -9,6 +9,7 @@
 #include "model.h"
 
 struct Anova {
+    bool isAov;
     int k;
     double rse;
     double rss;
