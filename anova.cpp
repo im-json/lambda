@@ -11,8 +11,8 @@ void sequence(Model m, Anova &a) {
     a.df.tail(1) << m.n - m.k - 1;
 
     Eigen::HouseholderQR<Eigen::MatrixXd> qr(m.x);
-    Eigen::MatrixXd i = Eigen::MatrixXd::Identity(m.n, m.k + 1);
-    Eigen::MatrixXd q = qr.householderQ() * i;
+    Eigen::MatrixXd j = Eigen::MatrixXd::Identity(m.n, m.k + 1);
+    Eigen::MatrixXd q = qr.householderQ() * j;
     Eigen::VectorXd proj = q.transpose() * m.y;
 
     for (int i = 0; i <= m.k; i++) {
