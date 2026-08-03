@@ -9,11 +9,7 @@
 #include "model.h"
 #include "summary.h"
 #include "anova.h"
-
-struct Column {
-    std::string name;
-    Eigen::VectorXd vals;
-};
+#include "variance.h"
 
 struct Object {
     int type;
@@ -51,6 +47,8 @@ void find_vector(Input i, Memory m, Eigen::VectorXd &v);
 void add_length(Input i, Memory m, Object &o);
 
 void add_mean(Input i, Memory m, Object &o);
+
+void add_effects(Input i, Memory m, Object &o);
 
 void add_model(Input i, Memory m, Object &o);
 

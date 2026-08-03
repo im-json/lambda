@@ -29,6 +29,8 @@ void functions(Input i, Memory m, Object &o) {
         add_length(i, m, o);
     } else if (i.fn == "mean") {
         add_mean(i, m, o);
+    } else if (i.fn == "effects") {
+        add_effects(i, m, o);
     } else if (i.fn == "lm") {
         add_model(i, m, o);
     } else if (i.fn == "summary") {
@@ -87,10 +89,7 @@ void objectify(Object o, Memory &m) {
 void find_memory(Input i, Memory m) {
     for (int j = 0; j < m.data.size(); j++) {
         if (m.data[j].name == i.obj) {
-            for (int k = 0; k < m.data[j].vals.size(); k++) {
-                std::cout << m.data[j].vals[k] << " ";
-            }
-            std::cout << std::endl;
+            print_column(m.data[j]);
             return;
         }
     }
@@ -147,12 +146,12 @@ void add_length(Input i, Memory m, Object &o) {
 
     double len = v.size();
 
-    Column c;
-
     if (i.obj.empty()) {
         std::cout << len << std::endl;
         return;
     }
+
+    Column c;
 
     c.name = i.obj;
     c.vals.resize(1);
@@ -168,19 +167,48 @@ void add_mean(Input i, Memory m, Object &o) {
 
     find_vector(i, m, v);
 
-    double mean = v.sum() / v.size();
+    double avg = v.mean();
+
+    if (i.obj.empty()) {
+        std::cout << avg << std::endl;
+        return;
+    }
 
     Column c;
 
+    c.name = i.obj;
+    c.vals.resize(1);
+    c.vals << avg;
+
+    o.vec = c;
+}
+
+void add_effects(Input i, Memory m, Object &o) {
+    o.type = 0;
+
+    Model mod;
+
+    find_model(i, m, mod);
+
+    Eigen::VectorXd v;
+    v.resize(mod.k + 1);
+
+    effects(mod, v);
+
+    Column c;
+
+    c.vars.resize(mod.k + 1);
+    c.vars = mod.call;
+    c.vars[0] = "(Intercept)";
+    c.vals.resize(mod.k + 1);
+    c.vals = v;
+
     if (i.obj.empty()) {
-        std::cout << mean << std::endl;
+        print_column_precise(c);
         return;
     }
 
     c.name = i.obj;
-    c.vals.resize(1);
-    c.vals << mean;
-
     o.vec = c;
 }
 
@@ -254,8 +282,6 @@ void add_vector(Input i, Memory d, Object &o) {
     while (std::getline(stream, num, ',')) {
         v.push_back(std::stod(num));
     }
-    
-    Column c;
 
     if (i.obj.empty()) {
         for (int j = 0; j < v.size(); j++) {
@@ -264,6 +290,8 @@ void add_vector(Input i, Memory d, Object &o) {
         std::cout << std::endl;
         return;
     }
+
+    Column c;
 
     c.name = i.obj;
     c.vals.resize(v.size());

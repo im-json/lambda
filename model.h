@@ -3,6 +3,13 @@
 #include <vector>
 #include <string>
 #include <Eigen/Dense>
+#include <iomanip>
+
+struct Column {
+    std::string name;
+    std::vector<std::string> vars;
+    Eigen::VectorXd vals;
+};
 
 struct Model {
     int n;
@@ -16,5 +23,11 @@ struct Model {
     std::string name;
     std::vector<std::string> call;
 };
+
+void effects(Model m, Eigen::VectorXd &v);
+
+void print_column(Column c);
+
+void print_column_precise(Column c);
 
 void print_formula(std::vector<std::string> call);

@@ -4,7 +4,6 @@
 #include <string>
 #include <Eigen/Dense>
 #include <cmath>
-#include <iomanip>
 
 #include "model.h"
 
@@ -21,8 +20,6 @@ struct Anova {
     std::string name;
     std::vector<std::string> call;
 };
-
-void effects(Model m, Anova &a);
 
 void sequence(Model m, Anova &a);
 

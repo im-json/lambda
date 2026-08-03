@@ -3,18 +3,10 @@
 
 #include "anova.h"
 
-void effects(Model m, Anova &a) {
-    Eigen::HouseholderQR<Eigen::MatrixXd> qr(m.x);
-    Eigen::MatrixXd j = Eigen::MatrixXd::Identity(m.n, m.k + 1);
-    Eigen::MatrixXd q = qr.householderQ() * j;
-
-    a.effects = q.transpose() * m.y;
-}
-
 void sequence(Model m, Anova &a) {
     a.seqss.resize(m.k + 1);
 
-    effects(m, a);
+    effects(m, a.effects);
 
     for (int i = 0; i <= m.k; i++) {
         a.seqss[i] = std::pow(a.effects[i], 2);
