@@ -69,5 +69,5 @@ We multiply the transposed partial $Q$ matrix by $y$ to build the orthogonal eff
 $$V = (H_1H_2\cdots H_pJ)^{\text{T}}y = (J^{\text{T}}H_pH_{p-1}\cdots H_1)y$$
 
 ```cpp
-Eigen::VectorXd proj = q.transpose() * m.y;
+Eigen::VectorXd v = q.transpose() * m.y;
 ```
