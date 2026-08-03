@@ -1,4 +1,4 @@
-# ANOVA
+# Model
 
 Let $y = X\beta + \varepsilon$ represent a linear model. We express the $n \times p$ matrix $X$ as a row vector such that
 
@@ -71,9 +71,3 @@ $$V = (H_1H_2\cdots H_pJ)^{\text{T}}y = (J^{\text{T}}H_pH_{p-1}\cdots H_1)y$$
 ```cpp
 Eigen::VectorXd proj = q.transpose() * m.y;
 ```
-
-**Sequential Sum of Squares**
-
-The sequential, or Type I, sum of squares vector is given by the element-wise square of $V$.
-Therefore the sequential sum of squares for $\beta_k$ is given by $V_k^2$.
-Note that $V_0^2$ is often irrelevant, as $\beta_0$ is the intercept.
