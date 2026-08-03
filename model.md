@@ -28,7 +28,7 @@ y_n
 $$
 
 We compute the sequential sum of squares for $\beta_0,\beta_1,\dots,\beta_p$ using QR decomposition by Householder transformation.
-The following logic is implemented by the $\mathtt{effects()}$ and $\mathtt{sequence()}$ helper functions in $\mathtt{anova.cpp}$.
+The following logic is implemented by the $\mathtt{effects()}$ helper function in $\mathtt{model.cpp}$.
 
 Let the $n \times p$ matrix $J$ be defined as
 
