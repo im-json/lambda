@@ -3,12 +3,13 @@
 
 #include "model.h"
 
-void effects(Model m, Eigen::VectorXd &v) {
+void effects(Model m, Eigen::VectorXd &vec) {
     Eigen::HouseholderQR<Eigen::MatrixXd> qr(m.x);
     Eigen::MatrixXd j = Eigen::MatrixXd::Identity(m.n, m.k + 1);
     Eigen::MatrixXd q = qr.householderQ() * j;
-
-    v = q.transpose() * m.y;
+    Eigen::VectorXd v = q.transpose() * m.y;
+    
+    vec = v;
 }
 
 void print_column(Column c) {
