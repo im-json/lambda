@@ -74,4 +74,6 @@ Eigen::VectorXd proj = q.transpose() * m.y;
 
 **Sequential Sum of Squares**
 
-The sequential sum of squares for $\beta_k$ is given by $V_k^2$. Note that $V_0^2$ is often irrelevant, as $\beta_0$ is the intercept.
+The sequential, or Type I, sum of squares vector is given by the element-wise square of $V$.
+Therefore the sequential sum of squares for $\beta_k$ is given by $V_k^2$.
+Note that $V_0^2$ is often irrelevant, as $\beta_0$ is the intercept.
