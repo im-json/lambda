@@ -1,20 +1,34 @@
 # ANOVA
 
-Let the $n \times p$ matrix $X$ be a row vector of $x_k$ terms
+Let $y = X\beta + \varepsilon$ represent a linear model. We express the $n \times p$ matrix $X$ as a row vector such that
 
 $$
-X =
-\begin{bmatrix}
-x_1 & x_2 & \cdots & x_p
-\end{bmatrix}
-, \quad y = 
 \begin{bmatrix}
 y_1 \\
-y_2 \\
+y_2 \\ 
 \vdots \\
 y_n
+\end{bmatrix} =
+\begin{bmatrix}
+1 & x_1 & x_2 & \cdots & x_p
+\end{bmatrix}
+\begin{bmatrix}
+\beta_0 \\
+\beta_1 \\
+\vdots \\
+\beta_p
+\end{bmatrix}
++
+\begin{bmatrix}
+\varepsilon_1 \\
+\varepsilon_2 \\
+\vdots \\
+\varepsilon_n
 \end{bmatrix}
 $$
+
+We compute the sequential sum of squares for $\beta_0,\beta_1,\dots,\beta_p$ using QR decomposition by Householder transformation.
+The following logic is implemented by the $\mathtt{effects()}$ and $\mathtt{sequence()}$ helper functions in $\mathtt{anova.cpp}$.
 
 Let the $n \times p$ matrix $J$ be defined as
 
@@ -27,30 +41,37 @@ J_{ij} =
 $$
 
 ```cpp
-Eigen::MatrixXd i = Eigen::MatrixXd::Identity(m.n, m.k + 1);    // p = m.k + 1
+Eigen::MatrixXd j = Eigen::MatrixXd::Identity(m.n, m.k + 1);    // p = m.k + 1
 ```
 
-Let $P_k$ be the partial Householder reflection matrix for $x_k$ defined as
+**Householder Transformation**
 
-$$P_k = J - 2\frac{x_k(x_k^{\text{T}}J)}{x_k^{\text{T}}x_k}$$
+Let $H_k$ be the symmetrical Householder reflection matrix for $x_k$ defined as
 
-Hence $P_k$ is not necessarily symmetrical.
+$$H_k = I - 2\frac{x_kx_k^{\text{T}}}{x_k^{\text{T}}x_k} = I - \frac{2}{\lVert x_k\rVert}x_kx_k^{\text{T}} = H_k^{\text{T}}$$
 
-**QR Factorisation**
-
-The product of Householder matrices $H_1$ to $H_p$ is equal to the orthogonal $Q$ matrix
-
-$$
-Q = H_1H_2\cdots H_p, \quad Q^{\text{T}} = (H_1H_2\cdots H_p)^{\text{T}} = H_1^{\text{T}}H_2^{\text{T}}\cdots H_p^{\text{T}} = H_pH_{p-1}\cdots H_1
-$$
-
-**Sequential Sum of Squares**
+We efficiently compute the QR decomposition of $X$ from the representation $Q = H_1H_2\cdots H_p$
 
 ```cpp
 Eigen::HouseholderQR<Eigen::MatrixXd> qr(m.x);
-Eigen::MatrixXd q = qr.householderQ() * i;
+```
+
+We multiply $H_1H_2\cdots H_p$ by $J$ to build an $n \times p$ partial $Q$ matrix
+
+```cpp
+Eigen::MatrixXd q = qr.householderQ() * j;
+```
+
+**Orthogonal Effects**
+
+We multiply the transposed partial $Q$ matrix by $y$ to build the orthogonal effects vector $V$
+
+$$V = (H_1H_2\cdots H_pJ)^{\text{T}}y = (J^{\text{T}}H_pH_{p-1}\cdots H_1)y$$
+
+```cpp
 Eigen::VectorXd proj = q.transpose() * m.y;
 ```
 
-The 
+**Sequential Sum of Squares**
 
+The sequential sum of squares for $\beta_k$ is given by $V_k^2$. Note that $V_0^2$ is often irrelevant, as $\beta_0$ is the intercept.
