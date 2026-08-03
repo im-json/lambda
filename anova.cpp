@@ -3,20 +3,21 @@
 
 #include "anova.h"
 
-void sequence(Model m, Anova &a) {
-    a.seqss.resize(m.k + 1);
-    a.df.resize(m.k + 2);
-
-    a.df.setConstant(1.0);
-    a.df.tail(1) << m.n - m.k - 1;
-
+void effects(Model m, Anova &a) {
     Eigen::HouseholderQR<Eigen::MatrixXd> qr(m.x);
     Eigen::MatrixXd j = Eigen::MatrixXd::Identity(m.n, m.k + 1);
     Eigen::MatrixXd q = qr.householderQ() * j;
-    Eigen::VectorXd proj = q.transpose() * m.y;
+
+    a.effects = q.transpose() * m.y;
+}
+
+void sequence(Model m, Anova &a) {
+    a.seqss.resize(m.k + 1);
+
+    effects(m, a);
 
     for (int i = 0; i <= m.k; i++) {
-        a.seqss[i] = std::pow(proj[i], 2);
+        a.seqss[i] = std::pow(a.effects[i], 2);
     }
 }
 
@@ -31,6 +32,10 @@ void anova(Model m, Anova &a, bool isAov) {
     a.meansq.resize(m.k + 1);
     a.fval.resize(m.k + 1);
     a.call = m.call;
+
+    a.df.resize(m.k + 2);
+    a.df.setConstant(1.0);
+    a.df.tail(1) << m.n - m.k - 1;
 
     for (int i = 0; i <= m.k; i++) {
         a.meansq[i] = a.seqss[i] / a.df[i];

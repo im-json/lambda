@@ -14,12 +14,15 @@ struct Anova {
     double rse;
     double rss;
     Eigen::VectorXd df;
+    Eigen::VectorXd effects;
     Eigen::VectorXd seqss;
     Eigen::VectorXd meansq;
     Eigen::VectorXd fval;
     std::string name;
     std::vector<std::string> call;
 };
+
+void effects(Model m, Anova &a);
 
 void sequence(Model m, Anova &a);
 
