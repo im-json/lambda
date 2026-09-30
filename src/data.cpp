@@ -19,8 +19,21 @@ void functions(Input i, Memory m, Object &o) {
 
     size_t t = std::string::npos;
 
+    double val;
+
+    Calculator<double> calc;
+
     if (i.fn == "" && i.args == "") {
-        find_memory(i, m);
+        try {
+            val = calc.parse(i.obj);
+            std::cout << val << std::endl;
+        }
+        catch(const std::runtime_error &e) {
+            find_memory(i, m);
+        }
+        catch(const std::exception &e) {
+            find_memory(i, m);
+        }
     }
 
     if (i.fn == "c") {

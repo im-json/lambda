@@ -1,7 +1,7 @@
 #include <iostream>
 #include <Eigen/Dense>
 
-#include "lambda.h"
+#include "data.h"
 
 int main() {
     Input i;

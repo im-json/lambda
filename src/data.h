@@ -10,6 +10,8 @@
 #include "summary.h"
 #include "anova.h"
 
+#include "../parser/calculator.h"
+
 struct Object {
     int type;
     Column vec;
