@@ -66,7 +66,7 @@ class Calculator : public Grammar<T> {
             this->infix("*", 20, mul); this->infix("/", 20, div);
             this->prefix("+", 30, pos, keep_symbol_lbp);
             this->prefix("-", 30, neg, keep_symbol_lbp);
-            this->infix("^", 40, pow); this->postfix("!", 50, fac);
+            this->infix_r("^", 40, pow); this->postfix("!", 50, fac);
             this->constant("PI", static_cast<T>(M_PI));
             this->constant("pi", static_cast<T>(M_PI));
             this->constant("Pi", static_cast<T>(M_PI));
