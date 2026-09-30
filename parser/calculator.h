@@ -1,11 +1,13 @@
 #pragma once
 
+#include <iostream>
 #include <string>
 #include <vector>
 #include <sstream>
 #include <algorithm>
 #include <stdexcept>
 #include <cstdlib>
+#include <cctype>
 #include <cmath>
 
 #include "../parser/parser_impl.h"
@@ -22,6 +24,18 @@ class Calculator : public Grammar<T> {
         static T pos(T lhs) { return lhs; }
         static T pow(T lhs, T rhs) { return std::pow(lhs, rhs); }
         static T fac(T lhs) { return std::tgamma(lhs + 1); }
+
+        template <typename U> struct tag {};
+
+        static float from_string(const std::string &s, size_t *pos, tag<float>) {
+            return std::stof(s, pos);
+        }
+        static double from_string(const std::string &s, size_t *pos, tag<double>) {
+            return std::stod(s, pos);
+        }
+        static long double from_string(const std::string &s, size_t *pos, tag<long double>) {
+            return std::stold(s, pos);
+        }
     public:
         Calculator() : Grammar<T>("(end)") {
             Grammar<T>::add_symbol_to_dict("(number)", 0)\
@@ -48,12 +62,7 @@ class Calculator : public Grammar<T> {
             [](const std::string& str, size_t beg, size_t end) -> T {
                 std::string sub = str.substr(beg, end - beg);
                 size_t valid = 0;
-                T result;
-                if constexpr (std::is_same_v<T, float>) {
-                    result = std::stof(sub, &valid);
-                } else {
-                    result = std::stod(sub, &valid);
-                }
+                T result = from_string(sub, &valid, tag<T>());
 
                 if (valid != sub.length()) {
                     throw std::runtime_error("");
